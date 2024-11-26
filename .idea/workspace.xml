@@ -6,13 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="c3389cbc-f9f4-40d4-b6ac-9f4e9b7d1c7f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/quasar.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/quasar.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/contracts/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/contracts/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/ChannelPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/ChannelPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/router/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/router/routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-auth/actions.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-auth/getters.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-auth/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-auth/mutations.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-auth/state.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/store-flag.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/.adonisrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/.adonisrc.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/providers/AppProvider.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/providers/AppProvider.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/start/socket.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/start/socket.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,6 +76,12 @@
     ]
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Nexis-Client/src" />
+      <recent name="$PROJECT_DIR$/Nexis-Client/src/store" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -93,7 +102,7 @@
       <workItem from="1732561533034" duration="7350000" />
       <workItem from="1732624112549" duration="9660000" />
       <workItem from="1732639358243" duration="640000" />
-      <workItem from="1732649074209" duration="1925000" />
+      <workItem from="1732649074209" duration="5419000" />
     </task>
     <servers />
   </component>
