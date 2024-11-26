@@ -3,11 +3,11 @@ import Channel from 'App/Models/Channel'
 
 export default class extends BaseSeeder {
   public async run() {
-    const uniqueKey = 'channel_name'
+    const uniqueKey = 'name'
 
     await Channel.updateOrCreateMany(uniqueKey, [
       {
-        channel_name: 'general',
+        name: 'general',
       },
     ])
   }

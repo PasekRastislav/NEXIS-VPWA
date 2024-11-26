@@ -19,7 +19,7 @@
                 label="Your name"
                 hint="First name"
                 lazy-rules
-                :rules="[val => val && val.length > 0 || 'Name required']"
+                :rules="[val => (val as string) && (val as string).length > 0 || 'Name required']"
               >
                 <template v-slot:prepend>
                   <q-icon name="person"/>
@@ -124,10 +124,10 @@
   </q-layout>
 </template>
 <script lang="ts">
-import { RouteLocationRaw, useRouter } from 'vue-router'
-const router = useRouter()
+import { RouteLocationRaw } from 'vue-router'
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   name: 'RegisterPage',
   data () {
     return {
@@ -150,10 +150,10 @@ export default {
   },
   methods: {
     onSubmit () {
-      this.$store.dispatch('auth/register', this.form).then(() => router.push(this.redirectTo))
+      this.$store.dispatch('auth/register', this.form).then(() => this.$router.push(this.redirectTo))
     }
   }
-}
+})
 
 </script>
 <style scoped lang="scss">

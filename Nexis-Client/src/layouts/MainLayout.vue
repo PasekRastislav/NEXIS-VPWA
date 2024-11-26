@@ -5,6 +5,13 @@
         <q-toolbar-title>
           Slek Lite
         </q-toolbar-title>
+        <q-btn
+          v-if="$store.state.auth.loggedIn"
+          @click="$store.dispatch('auth/logout')"
+          label="Logout"
+          color="primary"
+          class="q-mt-md"
+        />
 
         <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>

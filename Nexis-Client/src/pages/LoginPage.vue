@@ -1,9 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { RouteLocationRaw, useRoute, useRouter } from 'vue-router'
-const route = useRoute()
-const router = useRouter()
-
+import { RouteLocationRaw } from 'vue-router'
 export default defineComponent({
   name: 'LoginPage',
   data () {
@@ -14,7 +11,7 @@ export default defineComponent({
   },
   computed: {
     redirectTo (): RouteLocationRaw {
-      return (route.query.redirect as string) || { name: 'home' }
+      return (this.$route.query.redirect as string) || { name: 'home' }
     },
     loading (): boolean {
       return this.$store.state.auth.status === 'pending'
@@ -22,7 +19,7 @@ export default defineComponent({
   },
   methods: {
     onSubmit () {
-      this.$store.dispatch('auth/login', this.credentials).then(() => router.push(this.redirectTo))
+      this.$store.dispatch('auth/login', this.credentials).then(() => this.$router.push(this.redirectTo))
     }
   }
 })
