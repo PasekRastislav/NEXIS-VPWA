@@ -16,7 +16,11 @@
                 label="Firstname"
                 type="text"
                 autofocus
-              />
+              >
+                <template v-slot:append>
+                  <q-icon name="person"/>
+                </template>
+              </q-input>
               <q-input
                 name="lastName"
                 id="lastName"
@@ -24,7 +28,11 @@
                 label="Lastname"
                 type="text"
                 autofocus
-              />
+              >
+                <template v-slot:append>
+                  <q-icon name="person"/>
+                </template>
+              </q-input>
               <q-input
                 name="userName"
                 id="userName"
@@ -32,7 +40,11 @@
                 label="Username"
                 type="text"
                 autofocus
-              />
+              >
+                <template v-slot:append>
+                  <q-icon name="alternate_email"/>
+                </template>
+              </q-input>
               <q-input
                 name="email"
                 id="email"
@@ -40,7 +52,11 @@
                 type="email"
                 label="Email"
                 autofocus
-              />
+              >
+                <template v-slot:append>
+                  <q-icon name="email"/>
+                </template>
+              </q-input>
               <q-input
                 id="password"
                 name="password"
@@ -76,12 +92,14 @@
             </q-card-section>
             <q-card-section class="text-center q-pt-none">
               <q-btn
+                class="full-width q-mt-md"
                 label="Register"
                 color="accent"
                 :loading="loading"
                 @click="onSubmit"
+                style="border-radius: 10px;"
               />
-              <div class="text-grey-8">
+              <div class="text-grey-8 q-mt-md">
                 Already have an account?
                 <q-btn label="Login" size="sm" flat :to="{ name: 'login' }"></q-btn>
               </div>
@@ -121,3 +139,17 @@ export default defineComponent({
   }
 })
 </script>
+<style scoped lang="scss">
+.my_card {
+  width: 25rem;
+  border-radius: 8px;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.7);
+
+}
+
+@media (max-width: 600px) {
+  .my_card {
+    width: 20rem;
+  }
+}
+</style>

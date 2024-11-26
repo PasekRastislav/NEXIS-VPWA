@@ -5,21 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3389cbc-f9f4-40d4-b6ac-9f4e9b7d1c7f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/contracts/Auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/contracts/Auth.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/css/quasar.variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/css/quasar.variables.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/layouts/MainLayout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/layouts/MainLayout.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/LoginPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/LoginPage.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/RegisterPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/RegisterPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/router/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/router/routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/AuthService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/AuthService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Http/AuthController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Http/AuthController.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Middleware/Auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Middleware/Auth.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Models/Channel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Models/Channel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Models/User.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Models/User.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Validators/RegisterUserValidator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Validators/RegisterUserValidator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648537237750_users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648537237750_users.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648541165277_messages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648541165277_messages.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,12 +32,12 @@
     &quot;assignee&quot;: &quot;K1ko&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/PasekRastislav/NEXIS-VPWA.git",
-    "accountId": "264db6b4-8f2a-4870-8085-c812dde06f13"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/PasekRastislav/NEXIS-VPWA.git&quot;,
+    &quot;accountId&quot;: &quot;264db6b4-8f2a-4870-8085-c812dde06f13&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -56,29 +46,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "dev",
-    "last_opened_file_path": "/Users/rastislav/Downloads/Nexis",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/Users/rastislav/Downloads/Nexis/Nexis-Server/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/rastislav/Downloads/Nexis&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/rastislav/Downloads/Nexis/Nexis-Server/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlite"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
     ],
-    "vue.recent.templates": [
-      "Vue Composition API Component"
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
