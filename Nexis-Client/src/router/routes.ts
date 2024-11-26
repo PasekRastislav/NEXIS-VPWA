@@ -11,8 +11,8 @@ const routes: RouteRecordRaw[] = [
     path: '/auth',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: 'register', name: 'register', meta: { guestOnly: true }, component: () => import('pages/RegisterUser.vue') },
-      { path: 'login', name: 'login', meta: { guestOnly: true }, component: () => import('pages/LoginUser.vue') }
+      { path: 'register', name: 'register', meta: { guestOnly: true }, component: () => import('pages/RegisterPage.vue') },
+      { path: 'login', name: 'login', meta: { guestOnly: true }, component: () => import('pages/LoginPage.vue') }
     ]
   },
   // Always leave this as last one,
