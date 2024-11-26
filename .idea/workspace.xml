@@ -5,25 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3389cbc-f9f4-40d4-b6ac-9f4e9b7d1c7f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/NexisApp.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Client/src/contracts/Auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/contracts/Auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/css/quasar.variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/css/quasar.variables.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Client/src/layouts/MainLayout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/layouts/MainLayout.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/LoginUser.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/LoginPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/RegisterUser.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/RegisterPage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/RegisterPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/RegisterPage.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Client/src/router/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/router/routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/AuthService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/AuthService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Http/AuthController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Http/AuthController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Middleware/Auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Middleware/Auth.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Models/Channel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Models/Channel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648539957580_channels.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648539957580_channels.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/seeders/Channel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/seeders/Channel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Models/User.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Models/User.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Validators/RegisterUserValidator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Validators/RegisterUserValidator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648537237750_users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648537237750_users.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648541165277_messages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648541165277_messages.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Composition API Component" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -34,12 +42,12 @@
     &quot;assignee&quot;: &quot;K1ko&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/PasekRastislav/NEXIS-VPWA.git&quot;,
-    &quot;accountId&quot;: &quot;607052ec-2fce-4ee5-b8cc-60257bdbd5b5&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/PasekRastislav/NEXIS-VPWA.git",
+    "accountId": "264db6b4-8f2a-4870-8085-c812dde06f13"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -52,26 +60,29 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/Users/kristianko/Desktop/Nexicek_Keksicek",
+    "git-widget-placeholder": "dev",
+    "last_opened_file_path": "/Users/rastislav/Downloads/Nexis",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/Users/kristianko/Desktop/Nexicek_Keksicek/Nexis-Server/node_modules/typescript/lib",
+    "ts.external.directory.path": "/Users/rastislav/Downloads/Nexis/Nexis-Server/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
     "DatabaseDriversLRU": [
       "sqlite"
+    ],
+    "vue.recent.templates": [
+      "Vue Composition API Component"
     ]
   }
 }]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-WS-243.21565.180" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.22855.79" />
       </set>
     </attachedChunks>
   </component>
@@ -86,6 +97,7 @@
       <workItem from="1732267738237" duration="75000" />
       <workItem from="1732280344423" duration="133000" />
       <workItem from="1732561533034" duration="7350000" />
+      <workItem from="1732624112549" duration="9660000" />
     </task>
     <servers />
   </component>

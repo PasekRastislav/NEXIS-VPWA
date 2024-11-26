@@ -20,6 +20,7 @@ class AuthService {
 
   async register (data: RegisterData): Promise<User> {
     const response = await api.post<User>('auth/register', data)
+    console.log('User created:', response.data)
     return response.data
   }
 

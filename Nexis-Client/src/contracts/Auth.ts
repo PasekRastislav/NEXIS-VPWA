@@ -6,20 +6,24 @@ export interface ApiToken {
 }
 
 export interface RegisterData {
+  firstName: string
+  lastName: string
+  userName: string
   email: string
   password: string
-  passwordConfirmation: string
 }
 
 export interface LoginCredentials {
   email: string
   password: string
-  remember: boolean
 }
 
 export interface User {
   id: number
+  firstName: string
+  lastName: string
+  userName: string
   email: string
-  createdAt: string,
+  createdAt: string
   updatedAt: string
 }

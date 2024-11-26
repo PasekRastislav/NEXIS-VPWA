@@ -23,6 +23,15 @@ export default class User extends BaseModel {
   public password: string
 
   @column()
+  public first_name: string
+
+  @column()
+  public last_name: string
+
+  @column()
+  public user_name: string
+
+  @column()
   public rememberMeToken: string | null
 
   @column.dateTime({ autoCreate: true })
@@ -32,7 +41,7 @@ export default class User extends BaseModel {
   public updatedAt: DateTime
 
   @beforeSave()
-  public static async hashPassword (user: User) {
+  public static async hashPassword(user: User) {
     if (user.$dirty.password) {
       user.password = await Hash.make(user.password)
     }
@@ -41,7 +50,7 @@ export default class User extends BaseModel {
   @hasMany(() => Message, {
     foreignKey: 'user_id',
   })
-  public sentMessages: HasMany<typeof Message>;
+  public sentMessages: HasMany<typeof Message>
   @manyToMany(() => Channel, {
     pivotTable: 'channel_users',
     pivotForeignKey: 'user_id',
