@@ -54,14 +54,14 @@ export default class AuthMiddleware {
       'Unauthorized access',
       'E_UNAUTHORIZED_ACCESS',
       guardLastAttempted,
-      this.redirectTo,
+      this.redirectTo
     )
   }
 
   /**
    * Handle request
    */
-  public async handle (
+  public async handle(
     { auth }: HttpContextContract,
     next: () => Promise<void>,
     customGuards: (keyof GuardsList)[]
@@ -78,7 +78,7 @@ export default class AuthMiddleware {
   /**
    * Handle ws namespace connection
    */
-   public async wsHandle(
+  public async wsHandle(
     { auth }: WsContextContract,
     next: () => Promise<void>,
     customGuards: (keyof GuardsList)[]
