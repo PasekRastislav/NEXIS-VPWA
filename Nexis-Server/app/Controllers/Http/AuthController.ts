@@ -6,18 +6,11 @@ import RegisterUserValidator from 'App/Validators/RegisterUserValidator'
 export default class AuthController {
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   async register({ request }: HttpContextContract) {
-    console.log('Registering user...')
-    console.log('request:', request)
     const data = await request.validate(RegisterUserValidator)
-    console.log('1dmdmm')
     const user = await User.create(data)
-    console.log('2dmdmm')
     // join user to general channel
     const general = await Channel.findByOrFail('name', 'general')
     await user.related('channels').attach([general.id])
-
-    console.log('User created:', user)
-    console.log('Data:', data)
     return user
   }
 
