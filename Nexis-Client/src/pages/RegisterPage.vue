@@ -133,7 +133,6 @@ export default defineComponent({
   },
   methods: {
     onSubmit () {
-      console.log('dndnndn', this.form)
       this.$store.dispatch('auth/register', this.form).then(() => this.$router.push(this.redirectTo))
     }
   }
