@@ -5,11 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3389cbc-f9f4-40d4-b6ac-9f4e9b7d1c7f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/LoginPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/LoginPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/RegisterPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/RegisterPage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/quasar.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/quasar.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/contracts/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/contracts/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/ChannelPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/ChannelPage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/router/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/router/routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +23,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Vue Composition API Component" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -35,7 +39,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/PasekRastislav/NEXIS-VPWA.git&quot;,
-    &quot;accountId&quot;: &quot;264db6b4-8f2a-4870-8085-c812dde06f13&quot;
+    &quot;accountId&quot;: &quot;607052ec-2fce-4ee5-b8cc-60257bdbd5b5&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -57,7 +61,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/rastislav/Downloads/Nexis/Nexis-Server/node_modules/typescript/lib&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/kristianko/Desktop/Nexicek_Keksicek/Nexis-Server/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -72,7 +76,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.22855.79" />
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-WS-243.21565.180" />
       </set>
     </attachedChunks>
   </component>
@@ -88,6 +92,8 @@
       <workItem from="1732280344423" duration="133000" />
       <workItem from="1732561533034" duration="7350000" />
       <workItem from="1732624112549" duration="9660000" />
+      <workItem from="1732639358243" duration="640000" />
+      <workItem from="1732649074209" duration="1925000" />
     </task>
     <servers />
   </component>

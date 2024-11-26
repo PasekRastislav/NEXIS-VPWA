@@ -1,13 +1,21 @@
 <template>
-<q-page class="row items-center justify-evenly">
-   channel page content coming soon
-</q-page>
+  <q-page class="row items-center justify-evenly">
+    <channel-messages-component :messages="messages" />
+  </q-page>
 </template>
 
 <script lang="ts">
+import ChannelMessagesComponent from 'src/components/ChannelMessagesComponent.vue'
+import { SerializedMessage } from 'src/contracts'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'ChannelPage'
+  components: { ChannelMessagesComponent },
+  name: 'ChannelPage',
+  computed: {
+    messages (): SerializedMessage[] {
+      return this.$store.getters['channels/currentMessages']
+    }
+  }
 })
 </script>
