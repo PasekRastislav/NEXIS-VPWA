@@ -7,7 +7,9 @@ import {
 } from 'vuex'
 
 import auth from './module-auth'
+import channels from './module-channels'
 import type { AuthStateInterface } from './module-auth/state'
+import type { ChannelsStateInterface } from './module-channels/state'
 
 /*
  * If not building with SSR mode, you can
@@ -23,6 +25,7 @@ export interface StateInterface {
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   auth: AuthStateInterface
+  channels: ChannelsStateInterface
 }
 
 // provide typings for `this.$store`
@@ -38,7 +41,8 @@ export const storeKey: InjectionKey<VuexStore<StateInterface>> = Symbol('vuex-ke
 export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
-      auth
+      auth,
+      channels
     },
 
     // enable strict mode (adds overhead!)
