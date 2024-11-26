@@ -39,8 +39,6 @@ export default defineComponent({
               <q-input
                 name="email"
                 id="email"
-                dense
-                outlined
                 v-model.trim="credentials.email"
                 type="email"
                 class="q-mt-md"
@@ -56,12 +54,11 @@ export default defineComponent({
               <q-input
                 id="password"
                 name="password"
-                dense
-                outlined
                 v-model="credentials.password"
                 class="q-mt-md"
                 label="Password"
                 hint="Your password"
+                type="password"
                 lazy-rules
                 :rules="[val => val && val.length > 0 || 'Password is required']"
               >
