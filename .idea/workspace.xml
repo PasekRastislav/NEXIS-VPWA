@@ -6,14 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c3389cbc-f9f4-40d4-b6ac-9f4e9b7d1c7f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/contracts/Message.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/contracts/Message.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/RegisterPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/RegisterPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/AuthService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/AuthService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/ChannelService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/ChannelService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Http/AuthController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Http/AuthController.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Repositories/MessageRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Repositories/MessageRepository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648541165277_messages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648541165277_messages.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/router/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/router/routes.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
