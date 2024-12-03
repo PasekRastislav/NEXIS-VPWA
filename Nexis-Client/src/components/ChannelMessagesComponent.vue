@@ -4,7 +4,7 @@
       <q-chat-message
         v-for="message in messages"
         :key="message.id"
-        :name="message.author.email"
+        :name="message.author.userName"
         :text="[message.content]"
         :stamp="message.createdAt"
         :sent="isMine(message)"

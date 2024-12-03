@@ -9,6 +9,9 @@ export default class extends BaseSeeder {
       {
         name: 'general',
       },
+      {
+        name: 'testovaci',
+      },
     ])
   }
 }
