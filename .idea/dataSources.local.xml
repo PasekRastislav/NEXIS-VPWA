@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="dataSourceStorageLocal" created-in="WS-243.21565.180">
-    <data-source name="VPWA" uuid="bff385e1-718c-4b1a-ba53-2567ca62a65b">
+    <data-source name="VPWA" uuid="5fa55762-35ee-44a8-bfc8-b1453fcb9f1a">
       <database-info product="SQLite" version="3.45.1" jdbc-version="4.2" driver-name="SQLite JDBC" driver-version="3.45.1.0" dbms="SQLITE" exact-version="3.45.1" exact-driver-version="3.45">
         <identifier-quote-string>&quot;</identifier-quote-string>
       </database-info>

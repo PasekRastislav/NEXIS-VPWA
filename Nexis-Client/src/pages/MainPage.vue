@@ -9,16 +9,6 @@
 
           <q-btn round flat icon="logout" @click="logout" />
           <q-btn dense flat round icon="menu" @click="rightDrawer = !rightDrawer"/>
-
-          <q-btn round flat icon="more_vert">
-            <q-menu>
-              <q-list>
-                <q-item clickable @click="logout">
-                  <q-item-section>Logout</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
         </q-toolbar>
       </q-header>
 
@@ -34,6 +24,9 @@
               v-ripple
               @click="setActiveChannel(channel)"
             >
+              <q-item-section side>
+                <q-icon :name="channel.isPrivate ? 'lock' : 'lock_open'" />
+              </q-item-section>
               <q-item-section>
                 <q-item-label lines="1">{{ channel }}</q-item-label>
                 <q-item-label class="conversation__summary" caption>
@@ -54,7 +47,7 @@
       </q-page-container>
 
       <!-- Right Drawer -->
-      <q-drawer v-model="rightDrawer" side="right" bordered show-if-above
+      <q-drawer v-model="rightDrawer" side="right" bordered class="drawer-gradient"
       >
         <span class="q-subtitle-1 q-pl-md"> {{ activeChannel }} </span>
         <q-item v-if="activeChannel">
@@ -68,14 +61,14 @@
         <q-item v-if="activeChannel">
           <q-item-label>
             Owner:
-            {{ activeChannelReturn.owner }}
+            {{ activeChannel.owner }}
           </q-item-label>
         </q-item>
         <q-separator/>
         <q-item v-if="activeChannel">
           <q-item-section>Users in channel:</q-item-section>
         </q-item>
-<!--      here should be v-for to get users in chal  <q-item  clickable v-ripple>-->
+<!--      here should be v-for to get users in channel  <q-item  clickable v-ripple>-->
           <q-item-section>
             <q-avatar color="secondary">
 <!--avatar for user, just button with letter inside based on their username-->
@@ -94,6 +87,7 @@
           </q-item-section>
         </q-item>
         <q-separator/>
+        <q-btn @click="joinTestovaciChannel" label="Join Testovaci Channel" color="primary" />
       </q-drawer>
       <!-- Footer -->
       <q-footer>
@@ -146,13 +140,30 @@ export default defineComponent({
       this.message = ''
       this.loading = false
     },
+    async joinTestovaciChannel () {
+      try {
+        await this.join('testovaci')
+        console.log('Successfully joined channel: testovaci')
+      } catch (err) {
+        console.error('Failed to join channel: testovaci', err)
+      }
+    },
+    async leaveChannel () {
+      try {
+        await this.leave(this.activeChannel)
+        console.log('Successfully left channel:', this.activeChannel)
+      } catch (err) {
+        console.error('Failed to leave channel:', this.activeChannel, err)
+      }
+    },
     ...mapMutations('channels', {
       setActiveChannel: 'SET_ACTIVE'
     }),
     ...mapActions('auth', ['logout']),
-    ...mapActions('channels', ['addMessage'])
+    ...mapActions('channels', ['addMessage', 'join', 'leave'])
   }
 })
+
 </script>
 
 <style lang="scss">
