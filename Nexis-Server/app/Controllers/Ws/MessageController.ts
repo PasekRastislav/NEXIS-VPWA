@@ -10,7 +10,7 @@ import { inject } from '@adonisjs/core/build/standalone'
 // implementation is bind into container inside providers/AppProvider.ts
 @inject(['Repositories/MessageRepository'])
 export default class MessageController {
-  constructor (private messageRepository: MessageRepositoryContract) {}
+  constructor(private messageRepository: MessageRepositoryContract) {}
 
   public async loadMessages({ params }: WsContextContract) {
     return this.messageRepository.getAll(params.name)
