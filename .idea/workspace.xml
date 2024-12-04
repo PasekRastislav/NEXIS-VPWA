@@ -5,16 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3389cbc-f9f4-40d4-b6ac-9f4e9b7d1c7f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/bff385e1-718c-4b1a-ba53-2567ca62a65b.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/bff385e1-718c-4b1a-ba53-2567ca62a65b/storage_v2/_src_/schema/main.uQUzAA.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/components/ChannelMessagesComponent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/components/ChannelMessagesComponent.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/router/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/router/routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/contracts/repositories.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/contracts/repositories.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/seeders/Channel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/seeders/Channel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +99,8 @@
       <workItem from="1733134181957" duration="108000" />
       <workItem from="1733134315670" duration="1921000" />
       <workItem from="1733141906813" duration="915000" />
-      <workItem from="1733247537663" duration="7774000" />
+      <workItem from="1733247537663" duration="8288000" />
+      <workItem from="1733321464229" duration="3751000" />
     </task>
     <servers />
   </component>
