@@ -87,6 +87,12 @@
           </q-item-section>
         </q-item>
         <q-separator/>
+        <q-item clickable v-ripple @click="userList">
+          <q-item-section class="row items-center justify-center">List Users
+            <q-icon name="list"/>
+          </q-item-section>
+        </q-item>
+        <q-separator/>
         <q-btn @click="joinTestovaciChannel" label="Join Testovaci Channel" color="primary" />
       </q-drawer>
       <!-- Footer -->
@@ -134,6 +140,10 @@ export default defineComponent({
     }
   },
   methods: {
+    async userList () {
+      console.log('List of users in channel:', this.activeChannel)
+      await this.$store.dispatch('channels/listUsers', this.activeChannel)
+    },
     async send () {
       this.loading = true
       await this.addMessage({ channel: this.activeChannel, message: this.message })
@@ -142,8 +152,8 @@ export default defineComponent({
     },
     async joinTestovaciChannel () {
       try {
-        await this.join('testovaci')
-        console.log('Successfully joined channel: testovaci')
+        await this.$store.dispatch('channels/join', 'testovaci')
+        console.log('Successfully joined channel: testovaci', this.activeChannel)
       } catch (err) {
         console.error('Failed to join channel: testovaci', err)
       }
