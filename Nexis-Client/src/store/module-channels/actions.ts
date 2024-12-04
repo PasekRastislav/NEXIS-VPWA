@@ -26,6 +26,12 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async addMessage ({ commit }, { channel, message }: { channel: string, message: RawMessage }) {
     const newMessage = await channelService.in(channel)?.addMessage(message)
     commit('NEW_MESSAGE', { channel, message: newMessage })
+  },
+  async listUsers ({ commit }, channel: string) {
+    console.log('Listing users in channel:', channel)
+    const channelSocket = channelService.in(channel)
+    const users = await channelSocket?.listUsers()
+    commit('SET_USERS', { channel, users: users || [] })
   }
 }
 
