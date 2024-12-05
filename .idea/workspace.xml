@@ -6,8 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="c3389cbc-f9f4-40d4-b6ac-9f4e9b7d1c7f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/ChannelService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/ChannelService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/actions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/actions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/start/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/start/routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/start/socket.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/start/socket.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,6 +73,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Nexis-Server/app/Controllers/Http" />
       <recent name="$PROJECT_DIR$/Nexis-Client/src" />
       <recent name="$PROJECT_DIR$/Nexis-Client/src/store" />
     </key>
@@ -100,7 +104,7 @@
       <workItem from="1733134315670" duration="1921000" />
       <workItem from="1733141906813" duration="915000" />
       <workItem from="1733247537663" duration="8288000" />
-      <workItem from="1733321464229" duration="3751000" />
+      <workItem from="1733321464229" duration="22935000" />
     </task>
     <servers />
   </component>

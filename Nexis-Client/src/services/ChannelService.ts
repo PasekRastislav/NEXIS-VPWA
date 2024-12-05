@@ -32,6 +32,7 @@ class ChannelService {
 
     // connect to given channel namespace
     const channel = new ChannelSocketManager(`/channels/${name}`)
+    console.log('ChannelService.join', name, channel)
     this.channels.set(name, channel)
     return channel
   }

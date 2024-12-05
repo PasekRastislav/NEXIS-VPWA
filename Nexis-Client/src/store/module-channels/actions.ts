@@ -3,6 +3,7 @@ import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
 import { channelService } from 'src/services'
 import { RawMessage } from 'src/contracts'
+import { api } from 'boot/axios'
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async join ({ commit }, channel: string) {

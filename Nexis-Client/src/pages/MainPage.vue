@@ -87,7 +87,8 @@
           </q-item-section>
         </q-item>
         <q-separator/>
-        <q-btn @click="joinTestovaciChannel" label="Join Testovaci Channel" color="primary" />
+        <q-input model-value="channelName" label="Channel Name" outlined dense/>
+        <q-btn @click="joinChannel(channelName)" label="Join Testovaci Channel" color="primary" />
       </q-drawer>
       <!-- Footer -->
       <q-footer>
@@ -121,7 +122,8 @@ export default defineComponent({
       leftDrawerOpen: false,
       rightDrawer: false,
       message: '',
-      loading: false
+      loading: false,
+      channelName: ''
     }
   },
   computed: {
@@ -140,14 +142,16 @@ export default defineComponent({
       this.message = ''
       this.loading = false
     },
-    async joinTestovaciChannel () {
+    async joinChannel (channel: string) {
+      // join route by sending post channel/join
       try {
-        await this.join('testovaci')
-        console.log('Successfully joined channel: testovaci')
+        await this.$api.post('/channels/join', { channelName: this.channelName, isPrivate: false })
+        console.log('Successfully joined channel:', channel)
       } catch (err) {
-        console.error('Failed to join channel: testovaci', err)
+        console.error('Failed to join channel:', channel, err)
       }
     },
+
     async leaveChannel () {
       try {
         await this.leave(this.activeChannel)
