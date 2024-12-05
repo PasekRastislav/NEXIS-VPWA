@@ -15,10 +15,18 @@ class ChannelSocketManager extends SocketManager {
     this.socket.on('users', (users) => {
       console.log(users)
     })
+
+    this.socket.on('loadChannels:response', (channels) => {
+      store.commit('channels/SET_JOINED_CHANNELS', channels)
+    })
   }
 
   public addMessage (message: RawMessage): Promise<SerializedMessage> {
     return this.emitAsync('addMessage', message)
+  }
+
+  public emitAsyncWrapper (event: string, data: any): Promise<any> {
+    return this.emitAsync(event, data)
   }
 
   public loadMessages (): Promise<SerializedMessage[]> {
@@ -29,12 +37,27 @@ class ChannelSocketManager extends SocketManager {
     console.log('Listing users in channelservice:', this.namespace)
     return this.emitAsync('listUsers')
   }
+
+  public loadChannels (): Promise<void> {
+    console.log('ChannelSocket')
+    return this.emitAsync('loadChannels')
+  }
 }
 
 class ChannelService {
   private channels: Map<string, ChannelSocketManager> = new Map()
 
-  public join (name: string): ChannelSocketManager {
+  private rootChannel: ChannelSocketManager
+  constructor () {
+    this.rootChannel = new ChannelSocketManager('/')
+  }
+
+  public loadChannels (): Promise<void> {
+    console.log('channelService')
+    return this.rootChannel.loadChannels()
+  }
+
+  public async join (name: string): Promise<ChannelSocketManager> {
     if (this.channels.has(name)) {
       throw new Error(`User is already joined in channel "${name}"`)
     }
@@ -42,6 +65,8 @@ class ChannelService {
     // connect to given channel namespace
     const channel = new ChannelSocketManager(`/channels/${name}`)
     this.channels.set(name, channel)
+    await channel.emitAsyncWrapper('joinChannel', {})
+    // add channel to store
     return channel
   }
 

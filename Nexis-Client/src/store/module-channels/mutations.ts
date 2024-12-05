@@ -27,6 +27,14 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   },
   SET_USERS () {
     console.log('Setting users in channel')
+  },
+  SET_JOINED_CHANNELS (state, channels: { id: number, name: string }[]) {
+    channels.forEach(channel => {
+      // Initialize messages array if it doesn't exist
+      if (!state.messages[channel.name]) {
+        state.messages[channel.name] = []
+      }
+    })
   }
 }
 

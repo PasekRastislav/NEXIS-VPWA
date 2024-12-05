@@ -8,8 +8,9 @@
 */
 
 import Ws from '@ioc:Ruby184/Socket.IO/Ws'
+Ws.namespace('/').on('loadChannels', 'MessageController.loadChannels')
 
-Ws.namespace('/')
+Ws.namespace('/activity')
   .connected('ActivityController.onConnected')
   .disconnected('ActivityController.onDisconnected')
 
@@ -19,3 +20,4 @@ Ws.namespace('channels/:name')
   .on('loadMessages', 'MessageController.loadMessages')
   .on('addMessage', 'MessageController.addMessage')
   .on('listUsers', 'MessageController.listUsers')
+  .on('joinChannel', 'MessageController.joinChannel')
