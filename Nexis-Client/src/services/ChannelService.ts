@@ -15,6 +15,9 @@ class ChannelSocketManager extends SocketManager {
     this.socket.on('users', (users) => {
       console.log(users)
     })
+    this.socket.on('loadChannels:response', (channels) => {
+      store.commit('channels/SET_JOINED_CHANNELS', channels)
+    })
   }
 
   public addMessage (message: RawMessage): Promise<SerializedMessage> {
@@ -29,10 +32,24 @@ class ChannelSocketManager extends SocketManager {
     console.log('Listing users in channelservice:', this.namespace)
     return this.emitAsync('listUsers')
   }
+
+  public loadChannels (): Promise<void> {
+    console.log('ChannelSocket')
+    return this.emitAsync('loadChannels')
+  }
 }
 
 class ChannelService {
   private channels: Map<string, ChannelSocketManager> = new Map()
+  private rootChannel: ChannelSocketManager
+  constructor () {
+    this.rootChannel = new ChannelSocketManager('/')
+  }
+
+  public loadChannels (): Promise<void> {
+    console.log('channelService')
+    return this.rootChannel.loadChannels()
+  }
 
   public join (name: string): ChannelSocketManager {
     if (this.channels.has(name)) {

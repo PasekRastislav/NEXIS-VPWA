@@ -119,6 +119,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
+import ChannelService from 'src/services/ChannelService'
 
 export default defineComponent({
   name: 'ChatLayout',
@@ -138,6 +139,10 @@ export default defineComponent({
     activeChannel () {
       return this.$store.state.channels.active
     }
+  },
+  async mounted () {
+    console.log('onmounted')
+    await ChannelService.loadChannels()
   },
   methods: {
     async userList () {

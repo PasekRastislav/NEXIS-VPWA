@@ -2,6 +2,7 @@ import type { WsContextContract } from '@ioc:Ruby184/Socket.IO/WsContext'
 import type { MessageRepositoryContract } from '@ioc:Repositories/MessageRepository'
 import { inject } from '@adonisjs/core/build/standalone'
 import Channel from 'App/Models/Channel'
+import User from 'App/Models/User'
 import Database from '@ioc:Adonis/Lucid/Database'
 
 // inject repository from container to controller constructor
@@ -38,6 +39,32 @@ export default class MessageController {
       socket.emit('users', channelUsers)
     } catch (error) {
       console.error('Error fetching channel users:', error)
+    }
+  }
+  public async loadChannels({ socket, auth }: WsContextContract) {
+    console.log('kokotko')
+    try {
+      // Get the authenticated user and load their channels
+      const user = await User.query()
+        .where('id', auth.user!.id)
+        .preload('channels', (query) => {
+          query.select(['id', 'name', 'is_private'])
+        })
+        .firstOrFail()
+
+      // Extract channels and send them back
+      const channels = user.channels.map((channel) => ({
+        id: channel.id,
+        name: channel.name,
+        isPrivate: channel.is_private,
+      }))
+
+      console.log(channels)
+
+      socket.emit('loadChannels:response', channels)
+    } catch (error) {
+      console.error('Error loading channels:', error)
+      socket.emit('loadChannels:error', error)
     }
   }
 }
