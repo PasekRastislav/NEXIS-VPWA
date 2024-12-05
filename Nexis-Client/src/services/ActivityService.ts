@@ -26,4 +26,4 @@ class ActivitySocketManager extends SocketManager {
   }
 }
 
-export default new ActivitySocketManager('/')
+export default new ActivitySocketManager('/activity')

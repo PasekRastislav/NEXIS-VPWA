@@ -8,7 +8,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async join ({ commit }, channel: string) {
     try {
       commit('LOADING_START')
-      const messages = await channelService.join(channel).loadMessages()
+      const messages = await (await channelService.join(channel)).loadMessages()
       commit('LOADING_SUCCESS', { channel, messages })
     } catch (err) {
       commit('LOADING_ERROR', err)
