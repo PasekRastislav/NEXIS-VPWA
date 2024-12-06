@@ -19,6 +19,23 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     state.active = null
     delete state.messages[channel]
   },
+  DELETE_CHANNEL (state, channelName: string) {
+    console.log(`Deleting channel: ${channelName}`)
+    delete state.messages[channelName]
+    delete state.isPrivate[channelName]
+    delete state.adminStatus[channelName]
+
+    if (!state.deleted) {
+      state.deleted = {}
+    }
+
+    state.deleted[channelName] = true
+
+    // Reset active channel if it is the deleted one
+    if (state.active === channelName) {
+      state.active = null
+    }
+  },
   SET_ACTIVE (state, channel: string) {
     state.active = channel
   },
@@ -27,6 +44,14 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   },
   SET_USERS () {
     console.log('Setting users in channel')
+  },
+  SET_ADMIN_STATUS (state, { channel, isAdmin }) {
+    console.log('mutacia admin', isAdmin, channel)
+    if (!state.adminStatus) {
+      state.adminStatus = {}
+    }
+    state.adminStatus[channel] = isAdmin
+    console.log('mutacia admin2111', isAdmin, channel)
   },
   SET_JOINED_CHANNELS (state, channels: { id: number, name: string, isPrivate: boolean }[]) {
     channels.forEach(channel => {

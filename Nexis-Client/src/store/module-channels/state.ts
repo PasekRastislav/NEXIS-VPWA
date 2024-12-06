@@ -5,7 +5,9 @@ export interface ChannelsStateInterface {
   error: Error | null,
   messages: { [channel: string]: SerializedMessage[] }
   isPrivate: { [channel: string]: boolean },
-  active: string | null
+  active: string | null,
+  adminStatus: { [channel: string]: boolean },
+  deleted?: { [channel: string]: boolean },
 }
 
 function state (): ChannelsStateInterface {
@@ -14,7 +16,9 @@ function state (): ChannelsStateInterface {
     error: null,
     messages: {},
     active: null,
-    isPrivate: {}
+    isPrivate: {},
+    adminStatus: {},
+    deleted: {}
   }
 }
 

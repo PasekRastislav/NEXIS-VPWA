@@ -124,7 +124,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ChannelService from 'src/services/ChannelService'
 import { handleCommand } from 'src/chat/commandHandler'
 
@@ -141,6 +141,7 @@ export default defineComponent({
     }
   },
   computed: {
+    ...mapState('channels', ['deletedChannels']),
     ...mapGetters('channels', {
       channels: 'joinedChannels',
       lastMessageOf: 'lastMessageOf',

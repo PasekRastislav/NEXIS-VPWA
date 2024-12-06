@@ -19,6 +19,39 @@ class ChannelSocketManager extends SocketManager {
     this.socket.on('loadChannels:response', (channels) => {
       store.commit('channels/SET_JOINED_CHANNELS', channels)
     })
+
+    this.socket.on('channel:admin', (isAdmin) => {
+      console.log('Channel admin:', isAdmin, channel)
+      store.commit('channels/SET_ADMIN_STATUS', { channel, isAdmin })
+    })
+
+    this.socket.on('channel:admin:error', (error) => {
+      console.error('Error checking admin:', error)
+    })
+
+    this.socket.on('channel:joined', (channel) => {
+      console.log('Channel joined:', channel)
+      store.commit('channels/SET_JOINED_CHANNELS', [{ name: channel.name, isPrivate: channel.isPrivate }])
+    })
+
+    this.socket.on('channel:deleted', (channelName) => {
+      console.log(`Channel deleted event received: ${channelName}`)
+      store.commit('channels/DELETE_CHANNEL', channelName)
+    })
+
+    this.socket.on('channel:join:private', (channelName) => {
+      console.log('Cannot join private channel:', channelName)
+      store.commit('channels/LOADING_ERROR', new Error(`Cannot join private channel: ${channelName}`))
+    })
+
+    this.socket.on('channel:access:denied', (error) => {
+      console.log('Access denied to private channel:', error)
+      store.commit('channels/LOADING_ERROR', new Error(error.message))
+    })
+
+    this.socket.on('user:invited', (user) => {
+      store.commit('channels/SET_USERS', user)
+    })
   }
 
   public addMessage (message: RawMessage): Promise<SerializedMessage> {
@@ -27,6 +60,10 @@ class ChannelSocketManager extends SocketManager {
 
   public emitAsyncWrapper (event: string, data:{name:string, isPrivate:boolean}): Promise<never> {
     console.log('emitAsyncWrapper', event, data)
+    return this.emitAsync(event, data)
+  }
+
+  public emitAsyncWrapper2 (event: string, data:{name:string}): Promise<never> {
     return this.emitAsync(event, data)
   }
 
@@ -42,6 +79,10 @@ class ChannelSocketManager extends SocketManager {
   public loadChannels (): Promise<void> {
     console.log('ChannelSocket')
     return this.emitAsync('loadChannels')
+  }
+
+  public inviteUser (user: string): Promise<void> {
+    return this.emitAsync('inviteUser', user)
   }
 }
 
@@ -65,15 +106,15 @@ class ChannelService {
 
     // connect to given channel namespace
     const channel = new ChannelSocketManager(`/channels/${name}`)
-    this.channels.set(name, channel)
     console.log('name and private', name, isPrivate)
     try {
       await channel.emitAsyncWrapper('joinChannel', { name, isPrivate })
+      this.channels.set(name, channel)
     } catch (error) {
       this.channels.delete(name)
       console.error('Error joining channel:', error)
+      throw error
     }
-    // add channel to store
     return channel
   }
 
@@ -92,6 +133,19 @@ class ChannelService {
 
   public in (name: string): ChannelSocketManager | undefined {
     return this.channels.get(name)
+  }
+
+  public async checkAdmin (channelName: string): Promise<any> {
+    try {
+      const channel = this.channels.get(channelName)
+      console.log('channel', channel)
+      if (!channel) {
+        throw new Error(`User is not joined in channel "${channelName}"`)
+      }
+      await channel.emitAsyncWrapper2('checkAdmin', { name: channelName })
+    } catch (error) {
+      console.error('Error checking admin:', error)
+    }
   }
 }
 
