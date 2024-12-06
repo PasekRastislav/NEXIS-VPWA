@@ -25,7 +25,7 @@
               @click="setActiveChannel(channel)"
             >
               <q-item-section side>
-                <q-icon :name="channel.isPrivate ? 'lock' : 'lock_open'" />
+                <q-icon :name="isPrivate(channel) ? 'lock' : 'lock_open'" />
               </q-item-section>
               <q-item-section>
                 <q-item-label lines="1">{{ channel }}</q-item-label>
@@ -142,7 +142,8 @@ export default defineComponent({
   computed: {
     ...mapGetters('channels', {
       channels: 'joinedChannels',
-      lastMessageOf: 'lastMessageOf'
+      lastMessageOf: 'lastMessageOf',
+      isPrivate: 'isPrivate'
     }),
     activeChannel () {
       return this.$store.state.channels.active
