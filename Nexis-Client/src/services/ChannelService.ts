@@ -63,17 +63,6 @@ class ChannelService {
       throw new Error(`User is already joined in channel "${name}"`)
     }
 
-    const tempChannel = new ChannelSocketManager(`/channels/${name}`)
-    try {
-      console.log('I am here')
-      await tempChannel.emitAsyncWrapper('checkAccess', { name, isPrivate })
-    } catch (error) {
-      console.error('Access denied to channel:', error)
-      throw new Error(`Access denied to channel `)
-    } finally {
-      tempChannel.destroy()
-    }
-
     // connect to given channel namespace
     const channel = new ChannelSocketManager(`/channels/${name}`)
     this.channels.set(name, channel)
