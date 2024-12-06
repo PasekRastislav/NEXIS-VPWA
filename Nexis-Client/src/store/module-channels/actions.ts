@@ -14,13 +14,22 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       commit('LOADING_START')
       const channel = typeof params === 'string' ? params : params.channel
       const isPrivate = typeof params !== 'string' && params.isPrivate !== undefined ? params.isPrivate : false
-      console.log('Joining channel:', channel)
-      console.log('Is private:', isPrivate)
+
+      // Attempt to join via the channel service
       const channelSocket = await channelService.join(channel, isPrivate)
-      console.log('Channel joined1:', channelSocket)
+
+      // Handle private channel denial
+      if (!channelSocket) {
+        throw new Error('Failed to join channel.')
+      }
+
+      // If successful, load messages
       const messages = await channelSocket.loadMessages()
+
+      // Commit success only if join was successful
       commit('LOADING_SUCCESS', { channel, messages })
     } catch (err) {
+      console.error('Error joining channel:', err)
       commit('LOADING_ERROR', err)
       throw err
     }
@@ -42,6 +51,25 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     const channelSocket = channelService.in(channel)
     const users = await channelSocket?.listUsers()
     commit('SET_USERS', { channel, users: users || [] })
+  },
+  async checkAdmin ({ commit }, channel: string) {
+    try {
+      return await channelService.checkAdmin(channel)
+    } catch (error) {
+      console.error('Error checking admin:', error)
+      return false
+    }
+  },
+  async inviteUser ({ commit }, { channel, user }) {
+    try {
+      const channelSocket = channelService.in(channel)
+      if (!channelSocket) {
+        throw new Error('Channel not found')
+      }
+      await channelSocket.inviteUser(user)
+    } catch (err) {
+      console.error('Error inviting user:', err)
+    }
   }
 }
 

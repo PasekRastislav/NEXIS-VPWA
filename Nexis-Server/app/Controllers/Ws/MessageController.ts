@@ -57,6 +57,19 @@ export default class MessageController {
         name: channel.name,
         isPrivate: Boolean(channel.is_private),
       }))
+      const isPrivate = channels.map((channel) => channel.isPrivate)
+      const id = channels.map((channel) => channel.id)
+      //if the channel is private, we need to check if the user is in the channel_users table
+      if (isPrivate) {
+        const userInChannel = await Database.from('channel_users')
+          .where('user_id', auth.user!.id)
+          .andWhere('channel_id', id)
+          .first()
+        if (!userInChannel) {
+          console.log('User is not in the channel_users table')
+          socket.emit('channel:access:denied', { message: 'Access denied to private channel.' })
+        }
+      }
       console.log(channels)
       socket.emit('loadChannels:response', channels)
     } catch (error) {
@@ -106,6 +119,7 @@ export default class MessageController {
     { isPrivate }: { isPrivate: boolean }
   ) {
     console.log('Joining channel...')
+    let channelDict
     try {
       // Retrieve the channel by name
       let channel = await Channel.query().where('name', params.name).first()
@@ -130,7 +144,13 @@ export default class MessageController {
           is_admin: Boolean(true),
         })
 
-        socket.emit('channel:joined', channel)
+        channelDict = {
+          id: channel.id,
+          name: channel.name,
+          isPrivate: Boolean(channel.is_private),
+        }
+
+        socket.emit('channel:joined', channelDict)
         console.log('Channel created and user added as admin:', channel)
         return
       }
@@ -163,8 +183,8 @@ export default class MessageController {
 
       // Handle private channels
       if (isChannelPrivate) {
-        console.log('Private channels are currently unsupported.')
-        throw new Error('Private channels are not yet supported.')
+        socket.emit('channel:join:private', channel.name)
+        throw new Error('Private channel, access denied.')
       }
     } catch (error) {
       console.error('Error joining channel:', error.message)
@@ -189,7 +209,7 @@ export default class MessageController {
         console.log('Admin leaving means channel is being removed totally.')
         await Database.from('channels').where('id', channel.id).delete()
         await Database.from('channel_users').where('channel_id', channel.id).delete()
-        socket.emit('channel:deleted', channel)
+        socket.broadcast.emit('channel:deleted', channel.name)
         console.log('Channel successfully deleted:', channel)
         return
       }
@@ -203,6 +223,83 @@ export default class MessageController {
     } catch (error) {
       console.error('Error leaving channel:', error.message)
       socket.emit('channel:leave:error', { message: error.message })
+    }
+  }
+
+  public async checkAdmin({ params, socket, auth }: WsContextContract) {
+    console.log('Checking admin...')
+    try {
+      // Retrieve the channel by name
+      console.log('Checking admin123132...')
+      const channel = await Channel.findByOrFail('name', params.name)
+      console.log('Channel found:', channel)
+      const user = auth.user as User
+      console.log('User:', user)
+
+      // Check if the user is an admin of the channel
+      const channelUser = await Database.from('channel_users')
+        .where('user_id', user.id)
+        .andWhere('channel_id', channel.id)
+        .first()
+      channelUser.is_admin = channelUser.is_admin === 1 || channelUser.is_admin === '1'
+      console.log('User is admin:', channelUser.is_admin)
+      socket.emit('channel:admin', channelUser.is_admin)
+      console.log('User is admin:', channelUser.is_admin)
+    } catch (error) {
+      console.error('Error checking admin:', error.message)
+      socket.emit('channel:admin:error', { message: error.message })
+    }
+  }
+
+  public async inviteUser({ params, socket, auth }: WsContextContract, user: string) {
+    console.log('Inviting user...')
+    try {
+      // Retrieve the channel by name
+      const channel = await Channel.findByOrFail('name', params.name)
+      const invitingUser = auth.user as User
+
+      // Check if the user is an admin of the channel
+      const channelUser = await Database.from('channel_users')
+        .where('user_id', invitingUser.id)
+        .andWhere('channel_id', channel.id)
+        .first()
+      channelUser.is_admin = channelUser.is_admin === 1 || channelUser.is_admin === '1'
+      if (!channelUser.is_admin) {
+        console.log('Only admins can invite users.')
+        throw new Error('Only admins can invite users.')
+      }
+
+      // Retrieve the user by username
+      const invitedUser = await User.findByOrFail('user_name', user)
+      if (!invitedUser) {
+        console.log('User does not exist.')
+        throw new Error('User does not exist.')
+      }
+
+      // Check if the user is already in the channel
+      const userInChannel = await Database.from('channel_users')
+        .where('user_id', invitedUser.id)
+        .andWhere('channel_id', channel.id)
+        .first()
+
+      if (userInChannel) {
+        console.log('User is already in the channel.')
+        throw new Error('User is already in the channel.')
+      }
+
+      // Add the user to the channel
+      await Database.table('channel_users').insert({
+        user_id: invitedUser.id,
+        channel_id: channel.id,
+      })
+
+      socket.emit('user:invited', { channel, user: invitedUser })
+      console.log('User successfully invited to channel:', channel)
+    } catch (error) {
+      console.error('Error inviting user:', error.message)
+      socket.emit('user:invite:error', {
+        message: error.message,
+      })
     }
   }
 }
