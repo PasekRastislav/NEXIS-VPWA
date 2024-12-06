@@ -67,7 +67,12 @@ class ChannelService {
     const channel = new ChannelSocketManager(`/channels/${name}`)
     this.channels.set(name, channel)
     console.log('name and private', name, isPrivate)
-    await channel.emitAsyncWrapper('joinChannel', { name, isPrivate })
+    try {
+      await channel.emitAsyncWrapper('joinChannel', { name, isPrivate })
+    } catch (error) {
+      this.channels.delete(name)
+      console.error('Error joining channel:', error)
+    }
     // add channel to store
     return channel
   }

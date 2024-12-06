@@ -25,7 +25,7 @@
               @click="setActiveChannel(channel)"
             >
               <q-item-section side>
-                <q-icon :name="channel.isPrivate ? 'lock' : 'lock_open'" />
+                <q-icon :name="isPrivate(channel) ? 'lock' : 'lock_open'" />
               </q-item-section>
               <q-item-section>
                 <q-item-label lines="1">{{ channel }}</q-item-label>
@@ -126,6 +126,7 @@
 import { defineComponent } from 'vue'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import ChannelService from 'src/services/ChannelService'
+import { handleCommand } from 'src/chat/commandHandler'
 
 export default defineComponent({
   name: 'ChatLayout',
@@ -142,7 +143,8 @@ export default defineComponent({
   computed: {
     ...mapGetters('channels', {
       channels: 'joinedChannels',
-      lastMessageOf: 'lastMessageOf'
+      lastMessageOf: 'lastMessageOf',
+      isPrivate: 'isPrivate'
     }),
     activeChannel () {
       return this.$store.state.channels.active
@@ -160,11 +162,27 @@ export default defineComponent({
       console.log('List of users in channel:', this.activeChannel)
       await this.$store.dispatch('channels/listUsers', this.activeChannel)
     },
+    // send function for handling messages and commands
     async send () {
       this.loading = true
-      await this.addMessage({ channel: this.activeChannel, message: this.message })
-      this.message = ''
-      this.loading = false
+
+      try {
+        await handleCommand(this.message, {
+          store: this.$store,
+          activeChannel: this.$store.state.channels.active || ''
+        })
+        console.log(this.activeChannel)
+
+        // If not a command, proceed with adding the message to the channel
+        if (!this.message.startsWith('/')) {
+          await this.addMessage({ channel: this.$store.state.channels.active, message: this.message })
+        }
+      } catch (err) {
+        console.error('Failed to execute command or send message:', err)
+      } finally {
+        this.message = '' // Clear the message input after handling
+        this.loading = false
+      }
     },
     async joinNewChannel () {
       try {

@@ -64,6 +64,43 @@ export default class MessageController {
       socket.emit('loadChannels:error', error)
     }
   }
+  public async checkAccess({ params, socket, auth }: WsContextContract) {
+    console.log('Checking access...')
+    try {
+      // Retrieve the channel by name
+      const channel = await Channel.findByOrFail('name', params.name)
+
+      // Normalize `is_private` to boolean
+      const isChannelPrivate = Boolean(channel.is_private)
+      console.log('Channel private is :', isChannelPrivate)
+
+      // Handle public channels
+      if (!isChannelPrivate) {
+        console.log('Public channel, allowing access...')
+        socket.emit('channel:access:granted', channel)
+        return
+      }
+
+      // Handle private channels
+      if (isChannelPrivate) {
+        console.log('Private channel, checking access...')
+        const userInChannel = await Database.from('channel_users')
+          .where('user_id', auth.user!.id)
+          .andWhere('channel_id', channel.id)
+          .first()
+
+        if (userInChannel) {
+          socket.emit('channel:access:granted', channel)
+        } else {
+          console.log('Access denied to private channel.')
+          socket.emit('channel:access:denied', { message: 'Access denied to private channel.' })
+        }
+      }
+    } catch (error) {
+      console.error('Error checking access:', error.message)
+      socket.emit('channel:access:error', { message: error.message })
+    }
+  }
   public async joinChannel(
     { params, socket, auth }: WsContextContract,
     { isPrivate }: { isPrivate: boolean }
