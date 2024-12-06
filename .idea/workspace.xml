@@ -7,12 +7,10 @@
     <list default="true" id="c3389cbc-f9f4-40d4-b6ac-9f4e9b7d1c7f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/ActivityService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/ActivityService.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/ChannelService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/ChannelService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-auth/actions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-auth/actions.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/actions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/actions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/mutations.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648539957580_channels.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648539957580_channels.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Server/start/socket.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/start/socket.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -62,7 +60,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/Users/kristianko/Desktop/Nexicek_Keksicek/Nexis-Server/node_modules/typescript/lib",
+    "ts.external.directory.path": "/Users/rastislav/Downloads/Nexis/Nexis-Server/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -107,6 +105,7 @@
       <workItem from="1733141906813" duration="915000" />
       <workItem from="1733247537663" duration="8288000" />
       <workItem from="1733321464229" duration="3751000" />
+      <workItem from="1733433036177" duration="16784000" />
     </task>
     <servers />
   </component>

@@ -93,7 +93,13 @@
           </q-item-section>
         </q-item>
         <q-separator/>
-        <q-btn @click="joinTestovaciChannel" label="Join Testovaci Channel" color="primary" />
+        <q-input v-model="channelName" label="Channel Name" outlined dense bg-color="white"/>
+        <q-toggle v-model="isPrivateToggle" label="Private" dense :true-value="true" :false-value="false"/>
+        <q-item clickable v-ripple @click="joinNewChannel">
+          <q-item-section class="row items-center justify-center">Join Testovaci Channel
+            <q-icon name="login"/>
+          </q-item-section>
+        </q-item>
       </q-drawer>
       <!-- Footer -->
       <q-footer>
@@ -128,7 +134,9 @@ export default defineComponent({
       leftDrawerOpen: false,
       rightDrawer: false,
       message: '',
-      loading: false
+      loading: false,
+      channelName: '',
+      isPrivateToggle: false
     }
   },
   computed: {
@@ -158,12 +166,12 @@ export default defineComponent({
       this.message = ''
       this.loading = false
     },
-    async joinTestovaciChannel () {
+    async joinNewChannel () {
       try {
-        await this.$store.dispatch('channels/join', 'testovaci')
-        console.log('Successfully joined channel: testovaci', this.activeChannel)
+        await this.$store.dispatch('channels/join', { channel: this.channelName, isPrivate: this.isPrivateToggle })
+        console.log('Successfully joined channel:', this.channelName)
       } catch (err) {
-        console.error('Failed to join channel: testovaci', err)
+        console.error('Failed to join channel:', this.channelName, err)
       }
     },
     async leaveChannel () {

@@ -25,7 +25,8 @@ class ChannelSocketManager extends SocketManager {
     return this.emitAsync('addMessage', message)
   }
 
-  public emitAsyncWrapper (event: string, data: any): Promise<any> {
+  public emitAsyncWrapper (event: string, data:{name:string, isPrivate:boolean}): Promise<never> {
+    console.log('emitAsyncWrapper', event, data)
     return this.emitAsync(event, data)
   }
 
@@ -57,7 +58,7 @@ class ChannelService {
     return this.rootChannel.loadChannels()
   }
 
-  public async join (name: string): Promise<ChannelSocketManager> {
+  public async join (name: string, isPrivate: boolean): Promise<ChannelSocketManager> {
     if (this.channels.has(name)) {
       throw new Error(`User is already joined in channel "${name}"`)
     }
@@ -65,20 +66,22 @@ class ChannelService {
     // connect to given channel namespace
     const channel = new ChannelSocketManager(`/channels/${name}`)
     this.channels.set(name, channel)
-    await channel.emitAsyncWrapper('joinChannel', {})
+    console.log('name and private', name, isPrivate)
+    await channel.emitAsyncWrapper('joinChannel', { name, isPrivate })
     // add channel to store
     return channel
   }
 
-  public leave (name: string): boolean {
+  public async leave (name: string) {
     const channel = this.channels.get(name)
 
     if (!channel) {
       return false
     }
-
     // disconnect namespace and remove references to socket
+    await channel.emitAsyncWrapper('leaveChannel', { name, isPrivate: false })
     channel.destroy()
+
     return this.channels.delete(name)
   }
 
