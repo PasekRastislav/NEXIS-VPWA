@@ -23,6 +23,7 @@ class ChannelSocketManager extends SocketManager {
     })
 
     this.socket.on('users', (users: ChannelUser[]) => {
+      console.log('Received users event432:', users)
       store.commit('channels/SET_USERS', { channel, users })
     })
 

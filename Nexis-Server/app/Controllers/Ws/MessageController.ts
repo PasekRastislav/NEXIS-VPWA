@@ -42,7 +42,7 @@ export default class MessageController {
       console.log(channelUsers)
       //filter only names
       const channelUsersNames = channelUsers.map((user) => user.user_name)
-      console.log(channelUsersNames)
+      console.log('Emitting users123:', channelUsersNames)
       socket.emit('users', channelUsersNames)
     } catch (error) {
       console.error('Error fetching channel users:', error)

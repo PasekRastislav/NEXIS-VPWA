@@ -53,6 +53,7 @@ const mutation: MutationTree<ChannelsStateInterface> = {
       state.users = {}
     }
     state.users[channel] = users
+    console.log('SET_USERS Mutation:', channel, users)
   },
   SET_ADMIN_STATUS (state, { channel, isAdmin }) {
     if (!state.adminStatus) {

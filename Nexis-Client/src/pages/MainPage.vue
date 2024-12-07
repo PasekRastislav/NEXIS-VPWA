@@ -128,6 +128,7 @@ import { defineComponent } from 'vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ChannelService from 'src/services/ChannelService'
 import { handleCommand } from 'src/chat/commandHandler'
+import debounce from 'lodash/debounce'
 
 export default defineComponent({
   name: 'ChatLayout',
@@ -144,8 +145,12 @@ export default defineComponent({
         { value: 'online', label: 'Available', icon: 'check_circle', color: 'positive' },
         { value: 'dnd', label: 'Do Not Disturb', icon: 'do_not_disturb', color: 'warning' },
         { value: 'offline', label: 'Offline', icon: 'remove_circle', color: 'grey' }
-      ]
+      ],
+      debounceTyping: null as (() => void) | null
     }
+  },
+  created () {
+    this.debounceTyping = debounce(this.sendTyping, 300)
   },
   computed: {
     ...mapState('channels', ['deletedChannels']),
@@ -164,12 +169,17 @@ export default defineComponent({
     for (const channel of this.channels) {
       await this.$store.dispatch('channels/join', channel)
     }
+    if (this.activeChannel) {
+      console.log(`Rejoining active channel: ${this.activeChannel}`)
+      await this.$store.dispatch('channels/listUsers', this.activeChannel)
+    }
   },
   methods: {
+    sendTyping () {
+      this.$store.dispatch('channels/sendTyping', this.message)
+    },
     onTyping () {
-      this.$nextTick(() => {
-        this.$store.dispatch('channels/sendTyping', this.message)
-      })
+      this.debounceTyping?.()
     },
     async userList () {
       console.log('List of users in channel:', this.activeChannel)
@@ -182,7 +192,8 @@ export default defineComponent({
       try {
         await handleCommand(this.message, {
           store: this.$store,
-          activeChannel: this.$store.state.channels.active || ''
+          activeChannel: this.$store.state.channels.active || '',
+          dialog: this.$q.dialog
         })
         // If not a command, proceed with adding the message to the channel
         if (!this.message.startsWith('/')) {
