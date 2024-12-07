@@ -6,14 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="c3389cbc-f9f4-40d4-b6ac-9f4e9b7d1c7f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/quasar.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/quasar.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/ChannelPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/ChannelPage.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/ChannelService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/ChannelService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/actions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/actions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/mutations.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/state.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/state.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/ActivityService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/ActivityService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/ActivityController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/ActivityController.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Server/start/socket.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/start/socket.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -52,29 +47,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/kristianko/Desktop/Nexicek_Keksicek&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/rastislav/Downloads/Nexis/Nexis-Server/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "dev",
+    "last_opened_file_path": "/Users/kristianko/Desktop/Nexicek_Keksicek",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "/Users/kristianko/Desktop/Nexicek_Keksicek/Nexis-Server/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;sqlite&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
     ],
-    &quot;vue.recent.templates&quot;: [
-      &quot;Vue Composition API Component&quot;
+    "vue.recent.templates": [
+      "Vue Composition API Component"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Nexis-Client/src" />

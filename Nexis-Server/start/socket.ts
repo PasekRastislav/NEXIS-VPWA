@@ -13,6 +13,7 @@ Ws.namespace('/').on('loadChannels', 'MessageController.loadChannels')
 Ws.namespace('/activity')
   .connected('ActivityController.onConnected')
   .disconnected('ActivityController.onDisconnected')
+  .on('setStatus', 'ActivityController.setStatus')
 
 // this is dynamic namespace, in controller methods we can use params.name
 Ws.namespace('channels/:name')

@@ -75,6 +75,31 @@
             <q-icon name="login"/>
           </q-item-section>
         </q-item>
+        <!-- User status -->
+        <q-expansion-item
+          label="Status"
+          caption="Set your status"
+          header-class="text-white"
+          expand-separator
+        >
+          <q-list bordered>
+            <q-item
+              v-for="status in statuses"
+              :key="status.value"
+              clickable
+              v-ripple
+              @click="setUserStatus(status.value)"
+              :active="userState === status.value"
+            >
+              <q-item-section avatar>
+                <q-icon :name="status.icon" :color="status.color" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-white">{{ status.label }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-expansion-item>
       </q-drawer>
       <!-- Footer -->
       <q-footer>
@@ -113,7 +138,13 @@ export default defineComponent({
       message: '',
       loading: false,
       channelName: '',
-      isPrivateToggle: false
+      isPrivateToggle: false,
+      userState: 'online', // Current status
+      statuses: [
+        { value: 'online', label: 'Available', icon: 'check_circle', color: 'positive' },
+        { value: 'dnd', label: 'Do Not Disturb', icon: 'do_not_disturb', color: 'warning' },
+        { value: 'offline', label: 'Offline', icon: 'remove_circle', color: 'grey' }
+      ]
     }
   },
   computed: {

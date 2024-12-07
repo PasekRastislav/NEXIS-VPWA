@@ -8,6 +8,7 @@ export default class ActivityController {
 
   public async onConnected({ socket, auth, logger }: WsContextContract) {
     // all connections for the same authenticated user will be in the room
+    logger.info('new websocket connection')
     const room = this.getUserRoom(auth.user!)
     const userSockets = await socket.in(room).allSockets()
 
@@ -21,15 +22,19 @@ export default class ActivityController {
     // add userId to data shared between Socket.IO servers
     // https://socket.io/docs/v4/server-api/#namespacefetchsockets
     socket.data.userId = auth.user!.id
+    console.log('user id', socket.data.userId)
+    socket.data.userStatus = 'online'
 
     const allSockets = await socket.nsp.except(room).fetchSockets()
     const onlineIds = new Set<number>()
 
     for (const remoteSocket of allSockets) {
       onlineIds.add(remoteSocket.data.userId)
+      console.log(onlineIds)
     }
 
     const onlineUsers = await User.findMany([...onlineIds])
+    console.log('online users', onlineUsers)
 
     socket.emit('user:list', onlineUsers)
 
@@ -40,7 +45,6 @@ export default class ActivityController {
   public async onDisconnected({ socket, auth, logger }: WsContextContract, reason: string) {
     const room = this.getUserRoom(auth.user!)
     const userSockets = await socket.in(room).allSockets()
-
     // user is disconnected
     if (userSockets.size === 0) {
       // notify other users
@@ -48,5 +52,16 @@ export default class ActivityController {
     }
 
     logger.info('websocket disconnected', reason)
+  }
+
+  public async setStatus({ socket, auth, logger }: WsContextContract, status: string) {
+    try {
+      console.log(`${auth.user!.user_name} is now ${status}`)
+      socket.data.userStatus = status // update status
+      socket.broadcast.emit('user:setStatus', { user: auth.user, status: status })
+      logger.info('user status updated', { userId: auth.user!.id, status: status })
+    } catch (error) {
+      logger.error('Error setting status)', error)
+    }
   }
 }
