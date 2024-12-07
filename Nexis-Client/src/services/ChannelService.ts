@@ -1,6 +1,11 @@
 import { RawMessage, SerializedMessage } from 'src/contracts'
 import { BootParams, SocketManager } from './SocketManager'
 
+interface ChannelUser {
+  id: number;
+  nickname: string;
+  email: string;
+}
 // creating instance of this class automatically connects to given socket.io namespace
 // subscribe is called with boot params, so you can use it to dispatch actions for socket events
 // you have access to socket.io socket using this.socket
@@ -12,8 +17,8 @@ class ChannelSocketManager extends SocketManager {
       store.commit('channels/NEW_MESSAGE', { channel, message })
     })
 
-    this.socket.on('users', (users) => {
-      console.log(users)
+    this.socket.on('users', (users: ChannelUser[]) => {
+      store.commit('channels/SET_USERS', { channel, users })
     })
 
     this.socket.on('loadChannels:response', (channels) => {
@@ -49,8 +54,19 @@ class ChannelSocketManager extends SocketManager {
       store.commit('channels/LOADING_ERROR', new Error(error.message))
     })
 
-    this.socket.on('user:invited', (user) => {
-      store.commit('channels/SET_USERS', user)
+    this.socket.on('user:invited', ({ channel, user }) => {
+      console.log('User invited:', user, 'to channel:', channel)
+      store.commit('channels/SET_JOINED_CHANNELS', [{ name: channel.name, isPrivate: channel.isPrivate }])
+    })
+
+    this.socket.on('user:revoked', ({ channel, user }) => {
+      console.log('User revoked:', user, 'from channel:', channel)
+      store.commit('channels/REMOVE_JOINED_CHANNEL', channel.name)
+    })
+
+    this.socket.on('user:kicked', ({ channel, user }) => {
+      console.log('User kicked:', user, 'from channel:', channel)
+      store.commit('channels/REMOVE_JOINED_CHANNEL', channel.name)
     })
   }
 
@@ -71,9 +87,9 @@ class ChannelSocketManager extends SocketManager {
     return this.emitAsync('loadMessages')
   }
 
-  public listUsers (): Promise<void> {
-    console.log('Listing users in channelservice:', this.namespace)
-    return this.emitAsync('listUsers')
+  public async listUsers (): Promise<string[]> {
+    console.log('Listing users in channel service:', this.namespace)
+    return await this.emitAsync('listUsers')
   }
 
   public loadChannels (): Promise<void> {
@@ -83,6 +99,14 @@ class ChannelSocketManager extends SocketManager {
 
   public inviteUser (user: string): Promise<void> {
     return this.emitAsync('inviteUser', user)
+  }
+
+  public revokeUser (user: string): Promise<void> {
+    return this.emitAsync('revokeUser', user)
+  }
+
+  public kickUser (user: string): Promise<void> {
+    return this.emitAsync('kickUser', user)
   }
 }
 

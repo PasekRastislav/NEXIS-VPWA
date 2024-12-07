@@ -172,8 +172,6 @@ export default defineComponent({
           store: this.$store,
           activeChannel: this.$store.state.channels.active || ''
         })
-        console.log(this.activeChannel)
-
         // If not a command, proceed with adding the message to the channel
         if (!this.message.startsWith('/')) {
           await this.addMessage({ channel: this.$store.state.channels.active, message: this.message })

@@ -1,4 +1,4 @@
-import { SerializedMessage } from 'src/contracts'
+import { SerializedMessage, User } from 'src/contracts'
 
 export interface ChannelsStateInterface {
   loading: boolean,
@@ -8,7 +8,9 @@ export interface ChannelsStateInterface {
   active: string | null,
   adminStatus: { [channel: string]: boolean },
   deleted?: { [channel: string]: boolean },
-}
+  users: { [channel: string]: User[] },
+  notification: { channel: string, message: SerializedMessage } | null,
+  joinedChannels: { id: number; name: string; isPrivate: boolean; isBanned: boolean }[];}
 
 function state (): ChannelsStateInterface {
   return {
@@ -18,7 +20,10 @@ function state (): ChannelsStateInterface {
     active: null,
     isPrivate: {},
     adminStatus: {},
-    deleted: {}
+    deleted: {},
+    users: {},
+    notification: null,
+    joinedChannels: []
   }
 }
 

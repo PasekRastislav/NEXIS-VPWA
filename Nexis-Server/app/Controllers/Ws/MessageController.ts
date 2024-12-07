@@ -19,9 +19,13 @@ export default class MessageController {
     return this.messageRepository.getAll(params.name)
   }
 
-  public async addMessage({ params, socket, auth }: WsContextContract, content: string) {
-    const message = await this.messageRepository.create(params.name, auth.user!.id, content)
-    // broadcast message to other users in channel
+  public async addMessage({ params, socket, auth }: WsContextContract, content: any) {
+    const isSystem = content.system || false // Check if it's a system message
+    const message = await this.messageRepository.create(
+      params.name,
+      isSystem ? 0 : auth.user!.id,
+      content
+    ) // broadcast message to other users in channel
     socket.broadcast.emit('message', message)
     // return message to sender
     return message
@@ -36,7 +40,10 @@ export default class MessageController {
         .where('channel_users.channel_id', channel.id)
         .select('users.id', 'users.user_name')
       console.log(channelUsers)
-      socket.emit('users', channelUsers)
+      //filter only names
+      const channelUsersNames = channelUsers.map((user) => user.user_name)
+      console.log(channelUsersNames)
+      socket.emit('users', channelUsersNames)
     } catch (error) {
       console.error('Error fetching channel users:', error)
     }
@@ -51,26 +58,21 @@ export default class MessageController {
           query.select(['id', 'name', 'is_private'])
         })
         .firstOrFail()
-      // Extract channels and send them back
-      const channels = user.channels.map((channel) => ({
-        id: channel.id,
-        name: channel.name,
-        isPrivate: Boolean(channel.is_private),
-      }))
-      const isPrivate = channels.map((channel) => channel.isPrivate)
-      const id = channels.map((channel) => channel.id)
-      //if the channel is private, we need to check if the user is in the channel_users table
-      if (isPrivate) {
-        const userInChannel = await Database.from('channel_users')
-          .where('user_id', auth.user!.id)
-          .andWhere('channel_id', id)
-          .first()
-        if (!userInChannel) {
-          console.log('User is not in the channel_users table')
-          socket.emit('channel:access:denied', { message: 'Access denied to private channel.' })
-        }
-      }
-      console.log(channels)
+
+      const channels = await Promise.all(
+        user.channels.map(async (channel) => {
+          const userInChannel = await Database.from('channel_users')
+            .where('user_id', auth.user!.id)
+            .andWhere('channel_id', channel.id)
+            .first()
+          return {
+            id: channel.id,
+            name: channel.name,
+            isPrivate: Boolean(channel.is_private),
+            isBanned: Boolean(userInChannel?.is_banned),
+          }
+        })
+      )
       socket.emit('loadChannels:response', channels)
     } catch (error) {
       console.error('Error loading channels:', error)
@@ -257,14 +259,14 @@ export default class MessageController {
       // Retrieve the channel by name
       const channel = await Channel.findByOrFail('name', params.name)
       const invitingUser = auth.user as User
-
+      const isChannelPrivate = Boolean(channel.is_private)
       // Check if the user is an admin of the channel
       const channelUser = await Database.from('channel_users')
         .where('user_id', invitingUser.id)
         .andWhere('channel_id', channel.id)
         .first()
       channelUser.is_admin = channelUser.is_admin === 1 || channelUser.is_admin === '1'
-      if (!channelUser.is_admin) {
+      if (!channelUser.is_admin && isChannelPrivate) {
         console.log('Only admins can invite users.')
         throw new Error('Only admins can invite users.')
       }
@@ -283,21 +285,173 @@ export default class MessageController {
         .first()
 
       if (userInChannel) {
-        console.log('User is already in the channel.')
-        throw new Error('User is already in the channel.')
+        if (userInChannel.isBanned) {
+          if (isChannelPrivate) {
+            // set isBanned to false
+            await Database.from('channel_users')
+              .where('user_id', invitedUser.id)
+              .andWhere('channel_id', channel.id)
+              .update('is_banned', false)
+            console.log('User is banned, unbanned from channel')
+          } else if (channelUser.is_admin) {
+            // set isBanned to false
+            await Database.from('channel_users')
+              .where('user_id', invitedUser.id)
+              .andWhere('channel_id', channel.id)
+              .update('is_banned', false)
+            console.log('User is banned, unbanned from channel')
+          } else {
+            console.log('User is banned from channel.')
+            throw new Error('User is banned from channel.')
+          }
+        } else {
+          console.log('User is already in the channel.')
+          throw new Error('User is already in the channel.')
+        }
+      } else {
+        // Add the user to the channel
+        await Database.table('channel_users').insert({
+          user_id: invitedUser.id,
+          channel_id: channel.id,
+        })
+
+        // Emit the `user:invited` event
+        socket.to(invitedUser.id.toString()).emit('user:invited', {
+          channel: { name: channel.name, isPrivate: channel.is_private },
+          user: invitedUser.user_name,
+        })
+        console.log('User successfully invited to channel:', channel)
       }
-
-      // Add the user to the channel
-      await Database.table('channel_users').insert({
-        user_id: invitedUser.id,
-        channel_id: channel.id,
-      })
-
-      socket.emit('user:invited', { channel, user: invitedUser })
-      console.log('User successfully invited to channel:', channel)
     } catch (error) {
       console.error('Error inviting user:', error.message)
       socket.emit('user:invite:error', {
+        message: error.message,
+      })
+    }
+  }
+
+  public async revokeUser({ params, socket, auth }: WsContextContract, user: string) {
+    console.log('Revoking user...')
+    try {
+      // Retrieve the channel by name
+      const channel = await Channel.findByOrFail('name', params.name)
+      const invitingUser = auth.user as User
+      // Check if the user is an admin of the channel
+      const channelUser = await Database.from('channel_users')
+        .where('user_id', invitingUser.id)
+        .andWhere('channel_id', channel.id)
+        .first()
+      channelUser.is_admin = channelUser.is_admin === 1 || channelUser.is_admin === '1'
+      if (!channelUser.is_admin) {
+        console.log('Only admins can revoke users.')
+        throw new Error('Only admins can revoke users.')
+      }
+
+      // Retrieve the user by username
+      const revokedUser = await User.findByOrFail('user_name', user)
+      if (!revokedUser) {
+        console.log('User does not exist.')
+        throw new Error('User does not exist.')
+      }
+
+      // Check if the user is already in the channel
+      const userInChannel = await Database.from('channel_users')
+        .where('user_id', revokedUser.id)
+        .andWhere('channel_id', channel.id)
+        .first()
+
+      if (!userInChannel) {
+        console.log('User is not in the channel.')
+        throw new Error('User is not in the channel.')
+      }
+
+      // Remove the user from the channel
+      await Database.from('channel_users')
+        .where('user_id', revokedUser.id)
+        .andWhere('channel_id', channel.id)
+        .delete()
+
+      socket.to(revokedUser.id.toString()).emit('user:revoked', {
+        channel: { name: channel.name, isPrivate: channel.is_private },
+        user: revokedUser.user_name,
+      })
+      console.log('User successfully revoked from channel:', channel)
+    } catch (error) {
+      console.error('Error revoking user:', error.message)
+      socket.emit('user:revoke:error', {
+        message: error.message,
+      })
+    }
+  }
+
+  public async kickUser({ params, socket, auth }: WsContextContract, user: string) {
+    console.log('Kicking user...')
+    try {
+      // Retrieve the channel by name
+      const channel = await Channel.findByOrFail('name', params.name)
+      const kickingUser = auth.user as User
+      const isChannelPrivate = Boolean(channel.is_private)
+      // Check if the user is an admin of the channel
+      const channelUser = await Database.from('channel_users')
+        .where('user_id', kickingUser.id)
+        .andWhere('channel_id', channel.id)
+        .first()
+      channelUser.is_admin = channelUser.is_admin === 1 || channelUser.is_admin === '1'
+      if (!channelUser.is_admin && isChannelPrivate) {
+        console.log('Only admins can kick users.')
+        throw new Error('Only admins can kick users.')
+      }
+
+      // Retrieve the user by username
+      const kickedUser = await User.findByOrFail('user_name', user)
+      if (!kickedUser) {
+        console.log('User does not exist.')
+        throw new Error('User does not exist.')
+      }
+
+      // Check if the user is in the channel
+      const userInChannel = await Database.from('channel_users')
+        .where('user_id', kickedUser.id)
+        .andWhere('channel_id', channel.id)
+        .first()
+
+      if (!userInChannel) {
+        console.log('User is not in the channel.')
+        throw new Error('User is not in the channel.')
+      }
+
+      // if user is admin then kick_count is 3
+      if (channelUser.is_admin) {
+        await Database.from('channel_users')
+          .where('user_id', kickedUser.id)
+          .andWhere('channel_id', channel.id)
+          .update('is_banned', 1)
+          .update('kick_count', 0)
+        console.log('User is admin, banned from channel')
+      } else {
+        // if user is not admin then kick_count + 1
+        await Database.from('channel_users')
+          .where('user_id', kickedUser.id)
+          .andWhere('channel_id', channel.id)
+          .increment('kick_count', 1)
+        console.log('User kicked from channel:', channel)
+        if (userInChannel.kick_count === 3) {
+          await Database.from('channel_users')
+            .where('user_id', kickedUser.id)
+            .andWhere('channel_id', channel.id)
+            .update('is_banned', 1)
+            .update('kick_count', 0)
+          console.log('User is banned from channel')
+        }
+      }
+      socket.to(kickedUser.id.toString()).emit('user:kicked', {
+        channel: { name: channel.name, isPrivate: channel.is_private },
+        user: kickedUser.user_name,
+      })
+      console.log('User successfully kicked from channel:', channel)
+    } catch (error) {
+      console.error('Error kicking user:', error.message)
+      socket.emit('user:kick:error', {
         message: error.message,
       })
     }
