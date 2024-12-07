@@ -13,8 +13,28 @@ class ChannelSocketManager extends SocketManager {
   public subscribe ({ store }: BootParams): void {
     const channel = this.namespace.split('/').pop() as string
 
+    this.socket.on('invited', ({ channel, user }) => {
+      if (store.state.auth.user?.userName === user) {
+        console.log('User was invited to channel:', channel)
+
+        if (!channel.name) {
+          console.error('Invalid channel data:', channel)
+          return
+        }
+
+        store.dispatch('channels/joinFirst', channel.name)
+          .then(() => {
+            store.commit('channels/SET_JOINED_CHANNELS', [channel])
+            store.commit('channels/SET_ACTIVE', channel.name)
+            console.log(`Successfully loaded messages for channel: ${channel.name}`)
+          })
+          .catch((error) => {
+            console.error(`Failed to load messages for channel: ${channel.name}`, error)
+          })
+      }
+    })
+
     this.socket.on('user:typing', ({ userId, userName, text }) => {
-      console.log('Typing event received on frontend:', { userId, userName, text })
       store.dispatch('channels/setTyping', { channel, userId, userName, text })
     })
 
@@ -40,14 +60,31 @@ class ChannelSocketManager extends SocketManager {
       console.error('Error checking admin:', error)
     })
 
-    this.socket.on('channel:joined', (channel) => {
-      console.log('Channel joined:', channel)
-      store.commit('channels/SET_JOINED_CHANNELS', [{ name: channel.name, isPrivate: channel.isPrivate }])
+    this.socket.on('channel:joined', ({ channel, user }) => {
+      if (store.state.auth.user?.userName === user) {
+        console.log(`User ${user} joined channel ${channel}`)
+        store.dispatch('channels/joinFirst', channel.name)
+          .then(() => {
+            store.commit('channels/SET_JOINED_CHANNELS', [channel])
+            store.commit('channels/SET_ACTIVE', channel.name)
+            console.log('Channel joined:', channel)
+          })
+          .catch((error) => {
+            console.error(`Failed to load messages for channel: ${channel.name}`, error)
+          })
+      }
     })
 
     this.socket.on('channel:deleted', (channelName) => {
       console.log(`Channel deleted event received: ${channelName}`)
       store.commit('channels/DELETE_CHANNEL', channelName)
+    })
+
+    this.socket.on('channel:left', ({ channel, user }) => {
+      if (store.state.auth.user?.userName === user) {
+        console.log(`User ${user} left channel ${channel}`)
+        store.commit('channels/REMOVE_JOINED_CHANNEL', channel)
+      }
     })
 
     this.socket.on('channel:join:private', (channelName) => {
@@ -60,19 +97,40 @@ class ChannelSocketManager extends SocketManager {
       store.commit('channels/LOADING_ERROR', new Error(error.message))
     })
 
-    this.socket.on('user:invited', ({ channel, user }) => {
-      console.log('User invited:', user, 'to channel:', channel)
-      store.commit('channels/SET_JOINED_CHANNELS', [{ name: channel.name, isPrivate: channel.isPrivate }])
+    this.socket.on('user:invited', async ({ channel, user }) => {
+      console.log('som tu')
+      console.log(`User ${user} was invited to channel ${channel.name}`)
+      console.log('Channel1212:', channel)
+
+      const existingChannel = store.state.channels.joinedChannels.find(
+        (ch) => ch.name === channel.name
+      )
+
+      if (!existingChannel) {
+        // Add the new channel to the joinedChannels list
+        store.commit('channels/SET_JOINED_CHANNELS', [channel])
+
+        // Optionally, highlight the new channel or set it as active
+        store.commit('channels/HIGHLIGHT_CHANNEL', channel.name)
+      }
+    })
+
+    this.socket.on('user:invite:error', (error) => {
+      console.error('Invite error:', error.message)
     })
 
     this.socket.on('user:revoked', ({ channel, user }) => {
-      console.log('User revoked:', user, 'from channel:', channel)
-      store.commit('channels/REMOVE_JOINED_CHANNEL', channel.name)
+      if (store.state.auth.user?.userName === user) {
+        console.log('User revoked:', user, 'from channel:', channel)
+        store.commit('channels/REMOVE_JOINED_CHANNEL', channel.name)
+      }
     })
 
     this.socket.on('user:kicked', ({ channel, user }) => {
-      console.log('User kicked:', user, 'from channel:', channel)
-      store.commit('channels/REMOVE_JOINED_CHANNEL', channel.name)
+      if (store.state.auth.user?.userName === user) {
+        console.log('User kicked:', user, 'from channel:', channel)
+        store.commit('channels/REMOVE_JOINED_CHANNEL', channel.name)
+      }
     })
   }
 
@@ -134,6 +192,24 @@ class ChannelService {
     return this.rootChannel.loadChannels()
   }
 
+  public async joinFirst (name: string, isPrivate: boolean): Promise<ChannelSocketManager> {
+    if (this.channels.has(name)) {
+      throw new Error(`User is already joined in channel "${name}"`)
+    }
+
+    // connect to given channel namespace
+    const channel = new ChannelSocketManager(`/channels/${name}`)
+    try {
+      this.channels.set(name, channel)
+      console.log('private', isPrivate)
+    } catch (error) {
+      this.channels.delete(name)
+      console.error('Error joining channel:', error)
+      throw error
+    }
+    return channel
+  }
+
   public async join (name: string, isPrivate: boolean): Promise<ChannelSocketManager> {
     if (this.channels.has(name)) {
       throw new Error(`User is already joined in channel "${name}"`)
@@ -141,8 +217,6 @@ class ChannelService {
 
     // connect to given channel namespace
     const channel = new ChannelSocketManager(`/channels/${name}`)
-    console.log('name and private', name, isPrivate)
-    console.log('Client joined room:', `/channels/${name}`)
     try {
       await channel.emitAsyncWrapper('joinChannel', { name, isPrivate })
       this.channels.set(name, channel)

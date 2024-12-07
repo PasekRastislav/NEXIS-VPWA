@@ -23,6 +23,7 @@
               clickable
               v-ripple
               @click="setActiveChannel(channel)"
+              :class="{ 'highlight-channel': channel === activeChannel }"
             >
               <q-item-section side>
                 <q-icon :name="isPrivate(channel) ? 'lock' : 'lock_open'" />
@@ -167,7 +168,7 @@ export default defineComponent({
     console.log('onmounted')
     await ChannelService.loadChannels()
     for (const channel of this.channels) {
-      await this.$store.dispatch('channels/join', channel)
+      await this.$store.dispatch('channels/joinFirst', channel)
     }
     if (this.activeChannel) {
       console.log(`Rejoining active channel: ${this.activeChannel}`)
@@ -226,7 +227,7 @@ export default defineComponent({
       setActiveChannel: 'SET_ACTIVE'
     }),
     ...mapActions('auth', ['logout']),
-    ...mapActions('channels', ['addMessage', 'join', 'leave'])
+    ...mapActions('channels', ['addMessage', 'join', 'joinFirst', 'leave'])
   }
 })
 
@@ -265,5 +266,10 @@ export default defineComponent({
 
 .conversation__summary {
   margin-top: 4px;
+}
+
+.highlight-channel {
+  background-color: #e0f7fa; /* Light teal */
+  border-left: 4px solid #00796b; /* Dark teal border */
 }
 </style>

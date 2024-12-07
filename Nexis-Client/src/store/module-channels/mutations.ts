@@ -36,9 +36,6 @@ const mutation: MutationTree<ChannelsStateInterface> = {
       state.active = null
     }
   },
-  SET_ACTIVE (state, channel: string) {
-    state.active = channel
-  },
   NEW_MESSAGE (state, { channel, message }: { channel: string, message: SerializedMessage }) {
     state.messages[channel].push(message)
     if (channel !== state.active) {
@@ -61,16 +58,42 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     }
     state.adminStatus[channel] = isAdmin
   },
-  SET_JOINED_CHANNELS (state, channels: { id: number, name: string, isPrivate: boolean }[]) {
+  SET_JOINED_CHANNELS (state, channels: { id: number; name: string; isPrivate: boolean; isBanned: boolean }[]) {
     channels.forEach(channel => {
+      if (channel.isBanned) return
+
+      const existingIndex = state.joinedChannels.findIndex(ch => ch.name === channel.name)
+      if (existingIndex !== -1) {
+        state.joinedChannels.splice(existingIndex, 1)
+      }
+
+      state.joinedChannels.unshift({
+        id: channel.id,
+        name: channel.name,
+        isPrivate: channel.isPrivate,
+        isBanned: channel.isBanned
+      })
+
       if (!state.messages[channel.name]) {
         state.messages[channel.name] = []
       }
-      if (!state.isPrivate) {
-        state.isPrivate = {}
-      }
       state.isPrivate[channel.name] = channel.isPrivate
     })
+  },
+  SET_ACTIVE (state, channelName: string) {
+    state.active = channelName
+    state.highlightedChannel = channelName
+
+    // Move the active channel to the top of the joinedChannels list
+    const channelIndex = state.joinedChannels.findIndex(ch => ch.name === channelName)
+    if (channelIndex !== -1) {
+      const [activeChannel] = state.joinedChannels.splice(channelIndex, 1) // Remove it
+      state.joinedChannels.unshift(activeChannel) // Add it to the top
+    }
+  },
+
+  HIGHLIGHT_CHANNEL (state, channelName: string) {
+    state.highlightedChannel = channelName
   },
   REMOVE_JOINED_CHANNEL (state, channelName: string) {
     // Remove the channel from joinedChannels and its related data

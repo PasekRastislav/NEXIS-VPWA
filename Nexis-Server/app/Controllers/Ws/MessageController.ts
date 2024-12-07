@@ -4,6 +4,7 @@ import { inject } from '@adonisjs/core/build/standalone'
 import Channel from 'App/Models/Channel'
 import User from 'App/Models/User'
 import Database from '@ioc:Adonis/Lucid/Database'
+import Ws from '@ioc:Ruby184/Socket.IO/Ws'
 
 // inject repository from container to controller constructor
 // we do so because we can extract database specific storage to another class
@@ -65,6 +66,10 @@ export default class MessageController {
             .where('user_id', auth.user!.id)
             .andWhere('channel_id', channel.id)
             .first()
+          // Exclude channels where the user is banned
+          if (userInChannel?.is_banned) {
+            return null // Mark banned channels as null
+          }
           return {
             id: channel.id,
             name: channel.name,
@@ -73,7 +78,8 @@ export default class MessageController {
           }
         })
       )
-      socket.emit('loadChannels:response', channels)
+      const filteredChannels = channels.filter((channel) => channel !== null)
+      socket.emit('loadChannels:response', filteredChannels)
     } catch (error) {
       console.error('Error loading channels:', error)
       socket.emit('loadChannels:error', error)
@@ -156,13 +162,9 @@ export default class MessageController {
         console.log('Channel created and user added as admin:', channel)
         return
       }
-
-      console.log('Channel found:', channel)
-
       // Normalize `is_private` to boolean
       const isChannelPrivate = Boolean(channel.is_private)
 
-      console.log('Channel private is :', isChannelPrivate)
       // Handle public channels
       if (!isChannelPrivate) {
         console.log('Joining a public channel...')
@@ -178,19 +180,19 @@ export default class MessageController {
           })
         }
 
-        socket.emit('channel:joined', channel)
+        socket.broadcast.emit('channel:joined', channel, user)
         console.log('User successfully joined public channel:', channel)
         return
       }
 
       // Handle private channels
       if (isChannelPrivate) {
-        socket.emit('channel:join:private', channel.name)
+        console.log('Channel is private, cannot join...')
         throw new Error('Private channel, access denied.')
       }
     } catch (error) {
       console.error('Error joining channel:', error.message)
-      socket.emit('channel:join:error', { message: error.message })
+      throw new Error('Error joining channel:')
     }
   }
 
@@ -260,22 +262,19 @@ export default class MessageController {
       const channel = await Channel.findByOrFail('name', params.name)
       const invitingUser = auth.user as User
       const isChannelPrivate = Boolean(channel.is_private)
-      // Check if the user is an admin of the channel
-      const channelUser = await Database.from('channel_users')
-        .where('user_id', invitingUser.id)
-        .andWhere('channel_id', channel.id)
-        .first()
-      channelUser.is_admin = channelUser.is_admin === 1 || channelUser.is_admin === '1'
-      if (!channelUser.is_admin && isChannelPrivate) {
-        console.log('Only admins can invite users.')
-        throw new Error('Only admins can invite users.')
-      }
 
       // Retrieve the user by username
       const invitedUser = await User.findByOrFail('user_name', user)
-      if (!invitedUser) {
-        console.log('User does not exist.')
-        throw new Error('User does not exist.')
+
+      // Check if the inviting user is in the channel
+      const inviterInChannel = await Database.from('channel_users')
+        .where('user_id', invitingUser.id)
+        .andWhere('channel_id', channel.id)
+        .first()
+
+      if (!inviterInChannel) {
+        console.log('Inviter is not in the channel.')
+        throw new Error('You must be in the channel to invite users.')
       }
 
       // Check if the user is already in the channel
@@ -285,42 +284,51 @@ export default class MessageController {
         .first()
 
       if (userInChannel) {
-        if (userInChannel.isBanned) {
-          if (isChannelPrivate) {
-            // set isBanned to false
+        if (userInChannel.is_banned) {
+          if (inviterInChannel.is_admin) {
+            // Remove the ban and re-add the user to the channel
             await Database.from('channel_users')
               .where('user_id', invitedUser.id)
               .andWhere('channel_id', channel.id)
-              .update('is_banned', false)
-            console.log('User is banned, unbanned from channel')
-          } else if (channelUser.is_admin) {
-            // set isBanned to false
-            await Database.from('channel_users')
-              .where('user_id', invitedUser.id)
-              .andWhere('channel_id', channel.id)
-              .update('is_banned', false)
-            console.log('User is banned, unbanned from channel')
+              .update({ is_banned: false })
+
+            Ws.io.emit('invited', {
+              channel: { name: channel.name, isPrivate: channel.is_private },
+              user: invitedUser.user_name,
+            })
+            socket.broadcast.emit('user:invited', {
+              channel: { name: channel.name, isPrivate: channel.is_private },
+              user: invitedUser.user_name,
+            })
+            console.log('Ban removed and user invited:', invitedUser.user_name)
           } else {
-            console.log('User is banned from channel.')
-            throw new Error('User is banned from channel.')
+            // Non-admin cannot invite a banned user
+            throw new Error(
+              `${user} is banned from this channel. Only admins can manage banned users.`
+            )
           }
         } else {
           console.log('User is already in the channel.')
-          throw new Error('User is already in the channel.')
+          throw new Error(`${user} is already in the channel.`)
         }
       } else {
+        if (isChannelPrivate && !inviterInChannel.is_admin) {
+          throw new Error('Only admins can invite users to private channels.')
+        }
         // Add the user to the channel
         await Database.table('channel_users').insert({
           user_id: invitedUser.id,
           channel_id: channel.id,
         })
-
-        // Emit the `user:invited` event
-        socket.to(invitedUser.id.toString()).emit('user:invited', {
+        Ws.io.emit('invited', {
           channel: { name: channel.name, isPrivate: channel.is_private },
           user: invitedUser.user_name,
         })
-        console.log('User successfully invited to channel:', channel)
+        socket.broadcast.emit('user:invited', {
+          channel: { name: channel.name, isPrivate: channel.is_private },
+          user: invitedUser.user_name,
+        })
+        console.log('User successfully invited to channel:', channel.name)
       }
     } catch (error) {
       console.error('Error inviting user:', error.message)
@@ -354,7 +362,7 @@ export default class MessageController {
         throw new Error('User does not exist.')
       }
 
-      // Check if the user is already in the channel
+      // Check if the user is in the channel
       const userInChannel = await Database.from('channel_users')
         .where('user_id', revokedUser.id)
         .andWhere('channel_id', channel.id)
@@ -370,8 +378,7 @@ export default class MessageController {
         .where('user_id', revokedUser.id)
         .andWhere('channel_id', channel.id)
         .delete()
-
-      socket.to(revokedUser.id.toString()).emit('user:revoked', {
+      Ws.io.emit('user:revoked', {
         channel: { name: channel.name, isPrivate: channel.is_private },
         user: revokedUser.user_name,
       })
@@ -444,7 +451,7 @@ export default class MessageController {
           console.log('User is banned from channel')
         }
       }
-      socket.to(kickedUser.id.toString()).emit('user:kicked', {
+      Ws.io.emit('user:kicked', {
         channel: { name: channel.name, isPrivate: channel.is_private },
         user: kickedUser.user_name,
       })
