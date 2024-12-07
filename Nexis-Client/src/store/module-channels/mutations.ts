@@ -79,7 +79,18 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     if (state.active === channelName) {
       state.active = null
     }
+  },
+  SET_TYPING (state, { channel, userId, userName, text }) {
+    if (!state.typingUsers) state.typingUsers = {}
+    if (!state.typingUsers[channel]) state.typingUsers[channel] = {}
+    state.typingUsers[channel][userId] = { userName, text }
+  },
+  CLEAR_TYPING (state, { channel, userId }) {
+    if (state.typingUsers && state.typingUsers[channel] && state.typingUsers[channel][userId]) {
+      delete state.typingUsers[channel][userId]
+    }
   }
+
 }
 
 export default mutation

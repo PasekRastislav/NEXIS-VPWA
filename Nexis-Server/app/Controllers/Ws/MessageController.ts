@@ -456,4 +456,33 @@ export default class MessageController {
       })
     }
   }
+
+  public async userTyping(
+    { params, socket, auth }: WsContextContract,
+    typingData: { text: string }
+  ) {
+    try {
+      const channel = await Channel.findByOrFail('name', params.name)
+      const user = auth.user as User
+      console.log('Typing event received:', typingData, 'from channel:', params.name)
+      // Broadcast typing event to everyone in the channel except the sender
+      console.log('Broadcasting typing event to room:', `channels:${channel.name}`)
+      socket.broadcast.emit('user:typing', {
+        userId: user.id,
+        userName: user.user_name,
+        channelName: channel.name,
+        text: typingData.text,
+      })
+      console.log(
+        'broadcasted',
+        `channels:${channel.name}`,
+        user.id,
+        user.user_name,
+        channel.name,
+        typingData.text
+      )
+    } catch (error) {
+      console.error('Error in typing event:', error)
+    }
+  }
 }

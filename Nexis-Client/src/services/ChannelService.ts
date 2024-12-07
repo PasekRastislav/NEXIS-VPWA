@@ -13,6 +13,11 @@ class ChannelSocketManager extends SocketManager {
   public subscribe ({ store }: BootParams): void {
     const channel = this.namespace.split('/').pop() as string
 
+    this.socket.on('user:typing', ({ userId, userName, text }) => {
+      console.log('Typing event received on frontend:', { userId, userName, text })
+      store.dispatch('channels/setTyping', { channel, userId, userName, text })
+    })
+
     this.socket.on('message', (message: SerializedMessage) => {
       store.commit('channels/NEW_MESSAGE', { channel, message })
     })
@@ -108,6 +113,11 @@ class ChannelSocketManager extends SocketManager {
   public kickUser (user: string): Promise<void> {
     return this.emitAsync('kickUser', user)
   }
+
+  public sendTyping (channel: string, text: string): void {
+    console.log('Sending typing event with text :', text)
+    this.socket.emit('userTyping', { text })
+  }
 }
 
 class ChannelService {
@@ -131,6 +141,7 @@ class ChannelService {
     // connect to given channel namespace
     const channel = new ChannelSocketManager(`/channels/${name}`)
     console.log('name and private', name, isPrivate)
+    console.log('Client joined room:', `/channels/${name}`)
     try {
       await channel.emitAsyncWrapper('joinChannel', { name, isPrivate })
       this.channels.set(name, channel)
@@ -169,6 +180,13 @@ class ChannelService {
       await channel.emitAsyncWrapper2('checkAdmin', { name: channelName })
     } catch (error) {
       console.error('Error checking admin:', error)
+    }
+  }
+
+  public sendTyping (channel: string, text: string): void {
+    const channelSocket = this.channels.get(channel)
+    if (channelSocket) {
+      channelSocket.sendTyping(channel, text)
     }
   }
 }

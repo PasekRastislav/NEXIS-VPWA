@@ -49,38 +49,12 @@
       <!-- Right Drawer -->
       <q-drawer v-model="rightDrawer" side="right" bordered class="drawer-gradient"
       >
-        <span class="q-subtitle-1 q-pl-md"> {{ activeChannel }} </span>
         <q-item v-if="activeChannel">
           <q-item-section>Active Channel: {{ activeChannel }}</q-item-section>
-          <span class="q-subtitle-1 q-pl-md"> {{ activeChannel }} </span>
         </q-item>
         <q-item v-else>
           <q-item-section>No active channel</q-item-section>
         </q-item>
-        <!-- Check whether the channel is active, if active display its type       -->
-        <q-item v-if="activeChannel">
-          <q-item-label>
-            Owner:
-            {{ activeChannel.owner }}
-          </q-item-label>
-        </q-item>
-        <q-separator/>
-        <q-item v-if="activeChannel">
-          <q-item-section>Users in channel:</q-item-section>
-        </q-item>
-<!--      here should be v-for to get users in channel  <q-item  clickable v-ripple>-->
-          <q-item-section>
-            <q-avatar color="secondary">
-<!--avatar for user, just button with letter inside based on their username-->
-            </q-avatar>
-          </q-item-section>
-          <q-item-section>
-<!--userName-->
-            <q-item-label caption>
-<!--user status-->
-            </q-item-label>
-          </q-item-section>
-        <q-separator/>
         <q-item clickable v-ripple v-if="activeChannel" @click="leaveChannel">
           <q-item-section class="row items-center justify-center">Leave Channel
             <q-icon name="logout"/>
@@ -93,10 +67,11 @@
           </q-item-section>
         </q-item>
         <q-separator/>
+        <q-separator/>
         <q-input v-model="channelName" label="Channel Name" outlined dense bg-color="white"/>
         <q-toggle v-model="isPrivateToggle" label="Private" dense :true-value="true" :false-value="false"/>
         <q-item clickable v-ripple @click="joinNewChannel">
-          <q-item-section class="row items-center justify-center">Join Testovaci Channel
+          <q-item-section class="row items-center justify-center">Join Channel
             <q-icon name="login"/>
           </q-item-section>
         </q-item>
@@ -107,6 +82,7 @@
           <q-input
             v-model="message"
             :disable="loading"
+            @keydown="onTyping"
             @keydown.enter.prevent="send"
             rounded
             outlined
@@ -159,6 +135,11 @@ export default defineComponent({
     }
   },
   methods: {
+    onTyping () {
+      this.$nextTick(() => {
+        this.$store.dispatch('channels/sendTyping', this.message)
+      })
+    },
     async userList () {
       console.log('List of users in channel:', this.activeChannel)
       await this.$store.dispatch('channels/listUsers', this.activeChannel)
