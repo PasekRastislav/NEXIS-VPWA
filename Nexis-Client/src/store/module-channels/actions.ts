@@ -47,10 +47,21 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     commit('NEW_MESSAGE', { channel, message: newMessage })
   },
   async listUsers ({ commit }, channel: string) {
-    console.log('Listing users in channel:', channel)
-    const channelSocket = channelService.in(channel)
-    const users = await channelSocket?.listUsers()
-    commit('SET_USERS', { channel, users: users || [] })
+    try {
+      console.log('Listing users in channel:', channel)
+      const channelSocket = channelService.in(channel)
+      if (!channelSocket) {
+        throw new Error('Channel socket not found.')
+      }
+      const users = await channelSocket.listUsers()
+
+      // Commit the users to the Vuex state
+      commit('SET_USERS', { channel, users: users || [] })
+      return users
+    } catch (error) {
+      console.error('Error listing users:', error)
+      throw error // Rethrow error to handle it in the caller
+    }
   },
   async checkAdmin ({ commit }, channel: string) {
     try {
@@ -70,7 +81,28 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     } catch (err) {
       console.error('Error inviting user:', err)
     }
+  },
+  async revokeUser ({ commit }, { channel, user }) {
+    try {
+      const channelSocket = channelService.in(channel)
+      if (!channelSocket) {
+        throw new Error('Channel not found')
+      }
+      await channelSocket.revokeUser(user)
+    } catch (err) {
+      console.error('Error revoking user:', err)
+    }
+  },
+  async kickUser ({ commit }, { channel, user }) {
+    try {
+      const channelSocket = channelService.in(channel)
+      if (!channelSocket) {
+        throw new Error('Channel not found')
+      }
+      await channelSocket.kickUser(user)
+    } catch (err) {
+      console.error('Error kicking user:', err)
+    }
   }
 }
-
 export default actions

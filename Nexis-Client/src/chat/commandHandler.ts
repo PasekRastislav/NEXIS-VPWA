@@ -46,8 +46,19 @@ export async function handleCommand (message: string, options: CommandHandlerOpt
       } else { console.log('You are not an admin of this channel') }
       break
     case 'list':
-      await store.dispatch('channels/listUsers', activeChannel)
-      console.log('Listing users in channel')
+      try {
+        let users = store.state.channels.users[activeChannel] || []
+
+        if (users.length === 0) {
+          // If not in state, fetch from the server
+          users = await store.dispatch('channels/listUsers', activeChannel)
+        }
+
+        console.log('User list:', users)
+        await store.dispatch('channels/listUsers', activeChannel) // Fetch users if not already in state
+      } catch (error) {
+        console.error('Failed to list users:', error)
+      }
       break
     case 'invite':
       if (args.length > 0) {
@@ -56,6 +67,24 @@ export async function handleCommand (message: string, options: CommandHandlerOpt
         console.log('Successfully invited user:', username)
       } else {
         console.error('Username is required for /invite command')
+      }
+      break
+    case 'revoke':
+      if (args.length > 0) {
+        const username = args[0]
+        await store.dispatch('channels/revokeUser', { channel: activeChannel, user: username })
+        console.log('Successfully revoked user:', username)
+      } else {
+        console.error('Username is required for /revoke command')
+      }
+      break
+    case 'kick':
+      if (args.length > 0) {
+        const username = args[0]
+        await store.dispatch('channels/kickUser', { channel: activeChannel, user: username })
+        console.log('Your kick noticed:', username)
+      } else {
+        console.error('Username is required for /kick command')
       }
       break
     default:

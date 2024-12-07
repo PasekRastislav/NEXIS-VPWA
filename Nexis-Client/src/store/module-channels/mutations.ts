@@ -41,21 +41,27 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   },
   NEW_MESSAGE (state, { channel, message }: { channel: string, message: SerializedMessage }) {
     state.messages[channel].push(message)
+    if (channel !== state.active) {
+      state.notification = {
+        channel,
+        message
+      }
+    }
   },
-  SET_USERS () {
-    console.log('Setting users in channel')
+  SET_USERS (state, { channel, users }) {
+    if (!state.users) {
+      state.users = {}
+    }
+    state.users[channel] = users
   },
   SET_ADMIN_STATUS (state, { channel, isAdmin }) {
-    console.log('mutacia admin', isAdmin, channel)
     if (!state.adminStatus) {
       state.adminStatus = {}
     }
     state.adminStatus[channel] = isAdmin
-    console.log('mutacia admin2111', isAdmin, channel)
   },
   SET_JOINED_CHANNELS (state, channels: { id: number, name: string, isPrivate: boolean }[]) {
     channels.forEach(channel => {
-      // Initialize messages array if it doesn't exist
       if (!state.messages[channel.name]) {
         state.messages[channel.name] = []
       }
@@ -64,6 +70,15 @@ const mutation: MutationTree<ChannelsStateInterface> = {
       }
       state.isPrivate[channel.name] = channel.isPrivate
     })
+  },
+  REMOVE_JOINED_CHANNEL (state, channelName: string) {
+    // Remove the channel from joinedChannels and its related data
+    delete state.messages[channelName]
+    delete state.isPrivate[channelName]
+    delete state.users[channelName]
+    if (state.active === channelName) {
+      state.active = null
+    }
   }
 }
 
