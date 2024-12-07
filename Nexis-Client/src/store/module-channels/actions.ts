@@ -9,6 +9,31 @@ interface joinParams {
   isPrivate: boolean
 }
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
+  async joinFirst ({ commit }, params: string | joinParams) {
+    try {
+      commit('LOADING_START')
+      const channel = typeof params === 'string' ? params : params.channel
+      const isPrivate = typeof params !== 'string' && params.isPrivate !== undefined ? params.isPrivate : false
+
+      // Attempt to join via the channel service
+      const channelSocket = await channelService.joinFirst(channel, isPrivate)
+
+      // Handle private channel denial
+      if (!channelSocket) {
+        throw new Error('Failed to join channel.')
+      }
+
+      // If successful, load messages
+      const messages = await channelSocket.loadMessages()
+
+      // Commit success only if join was successful
+      commit('LOADING_SUCCESS', { channel, messages })
+    } catch (err) {
+      console.error('Error joining channel:', err)
+      commit('LOADING_ERROR', err)
+      throw err
+    }
+  },
   async join ({ commit }, params: string | joinParams) {
     try {
       commit('LOADING_START')
@@ -103,7 +128,6 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   },
   sendTyping ({ state }, text: string) {
     const activeChannel = state.active
-    console.log('text sent to typing', text)
     if (activeChannel) {
       channelService.sendTyping(activeChannel, text)
     }
@@ -116,6 +140,16 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     setTimeout(() => {
       commit('CLEAR_TYPING', { channel, userId })
     }, 5000)
+  },
+  async refreshChannels ({ commit }) {
+    try {
+      const channels = await channelService.loadChannels()
+      commit('SET_JOINED_CHANNELS', channels)
+      console.log('Refreshed channels21:', channels)
+    } catch (error) {
+      console.error('Failed to refresh channels:', error)
+    }
   }
+
 }
 export default actions

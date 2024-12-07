@@ -77,7 +77,7 @@ export async function handleCommand (message: string, options: CommandHandlerOpt
       if (args.length > 0) {
         const username = args[0]
         await store.dispatch('channels/inviteUser', { channel: activeChannel, user: username })
-        console.log('Successfully invited user:', username)
+        console.log('Invited user:', username)
       } else {
         console.error('Username is required for /invite command')
       }
