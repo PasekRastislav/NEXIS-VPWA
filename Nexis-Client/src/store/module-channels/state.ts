@@ -10,7 +10,9 @@ export interface ChannelsStateInterface {
   deleted?: { [channel: string]: boolean },
   users: { [channel: string]: User[] },
   notification: { channel: string, message: SerializedMessage } | null,
-  joinedChannels: { id: number; name: string; isPrivate: boolean; isBanned: boolean }[];}
+  joinedChannels: { id: number; name: string; isPrivate: boolean; isBanned: boolean }[],
+  typingUsers?: { [channel: string]: { [userId: string]: { userName: string; text: string } } }
+}
 
 function state (): ChannelsStateInterface {
   return {
@@ -23,7 +25,8 @@ function state (): ChannelsStateInterface {
     deleted: {},
     users: {},
     notification: null,
-    joinedChannels: []
+    joinedChannels: [],
+    typingUsers: {}
   }
 }
 

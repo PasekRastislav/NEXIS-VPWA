@@ -103,6 +103,22 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     } catch (err) {
       console.error('Error kicking user:', err)
     }
+  },
+  sendTyping ({ state }, text: string) {
+    const activeChannel = state.active
+    console.log('text sent to typing', text)
+    if (activeChannel) {
+      channelService.sendTyping(activeChannel, text)
+    }
+  },
+  setTyping ({ commit }, { channel, userId, userName, text }) {
+    // Commit the initial typing state
+    commit('SET_TYPING', { channel, userId, userName, text })
+
+    // Schedule the clearing of the typing state after a delay
+    setTimeout(() => {
+      commit('CLEAR_TYPING', { channel, userId })
+    }, 5000)
   }
 }
 export default actions
