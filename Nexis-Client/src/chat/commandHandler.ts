@@ -4,11 +4,12 @@ import { StateInterface } from 'src/store' // Ensure path accuracy based on your
 
 interface CommandHandlerOptions {
   store: VuexStore<StateInterface>
-  activeChannel: string
+  activeChannel: string,
+  dialog: (opts: any) => void
 }
 
 export async function handleCommand (message: string, options: CommandHandlerOptions): Promise<void> {
-  const { store, activeChannel } = options
+  const { store, activeChannel, dialog } = options
 
   // Check if the message starts with '/' which means it's a command
   if (!message.startsWith('/')) {
@@ -50,14 +51,26 @@ export async function handleCommand (message: string, options: CommandHandlerOpt
         let users = store.state.channels.users[activeChannel] || []
 
         if (users.length === 0) {
-          // If not in state, fetch from the server
+          users = await store.dispatch('channels/listUsers', activeChannel)
+        }
+        if (!users || users.length === 0) {
           users = await store.dispatch('channels/listUsers', activeChannel)
         }
 
-        console.log('User list:', users)
-        await store.dispatch('channels/listUsers', activeChannel) // Fetch users if not already in state
+        users = store.state.channels.users[activeChannel]
+        // Display users in a dialog
+        const userList = users.map(user => `• ${user}`).join('<br>')
+        dialog({
+          title: `Users in ${activeChannel}`,
+          message: userList || 'No users found in this channel.',
+          html: true
+        })
       } catch (error) {
         console.error('Failed to list users:', error)
+        dialog({
+          title: 'Error',
+          message: 'Failed to fetch user list. Please try again.'
+        })
       }
       break
     case 'invite':

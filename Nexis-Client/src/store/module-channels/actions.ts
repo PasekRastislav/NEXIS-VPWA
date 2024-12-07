@@ -53,11 +53,8 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       if (!channelSocket) {
         throw new Error('Channel socket not found.')
       }
-      const users = await channelSocket.listUsers()
-
       // Commit the users to the Vuex state
-      commit('SET_USERS', { channel, users: users || [] })
-      return users
+      return await channelSocket.listUsers()
     } catch (error) {
       console.error('Error listing users:', error)
       throw error // Rethrow error to handle it in the caller
