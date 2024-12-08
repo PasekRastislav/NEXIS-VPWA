@@ -15,7 +15,6 @@ import Ws from '@ioc:Ruby184/Socket.IO/Ws'
 @inject(['Repositories/MessageRepository'])
 export default class MessageController {
   constructor(private messageRepository: MessageRepositoryContract) {}
-
   public async loadMessages({ params }: WsContextContract) {
     return this.messageRepository.getAll(params.name)
   }

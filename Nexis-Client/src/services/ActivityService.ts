@@ -6,6 +6,8 @@ export type UserStatus = 'online' | 'offline' | 'dnd'
 
 class ActivitySocketManager extends SocketManager {
   private currentUserStatus: UserStatus = 'online'
+  private lastLogin: string | null = null
+
   public subscribe ({ store }:BootParams): void {
     this.socket.on('user:list', (onlineUsers: User[]) => {
       console.log('Online users list', onlineUsers)
@@ -36,14 +38,21 @@ class ActivitySocketManager extends SocketManager {
     })
   }
 
-  // public getCurrentUserStatus (): void {
-  //   // eslint-disable-next-line no-unused-expressions
-  //   this.currentUserStatus
-  // }
-
   public updateUserStatus (status: UserStatus): void {
     this.currentUserStatus = status
-    this.socket.emit('setStatus', status)
+    if (this.socket.connected) {
+      if (status === 'offline') {
+        this.lastLogin = new Date().toISOString()
+        console.log('Last login:', this.lastLogin)
+      } else {
+        this.lastLogin = null
+      }
+      this.socket.emit('setStatus', status)
+    }
+  }
+
+  public getLastLogin (): string | null {
+    return this.lastLogin
   }
 }
 
