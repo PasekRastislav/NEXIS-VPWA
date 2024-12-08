@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="VPWA" uuid="5fa55762-35ee-44a8-bfc8-b1453fcb9f1a">
+    <data-source source="LOCAL" name="db.sqlite3" uuid="79e80c8d-1901-4bb5-910c-02b17101b7d3">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>

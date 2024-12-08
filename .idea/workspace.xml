@@ -5,11 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3389cbc-f9f4-40d4-b6ac-9f4e9b7d1c7f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/ActivityService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/ActivityService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-activity/mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-activity/mutations.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/getters.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/getters.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Repositories/MessageRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Repositories/MessageRepository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648537237750_users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648537237750_users.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648539957580_channels.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648539957580_channels.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648541165277_messages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648541165277_messages.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648543188905_channel_users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1648543188905_channel_users.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1732191700898_invites.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1732191700898_invites.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/database/migrations/1733661986172_kicks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/database/migrations/1733661986172_kicks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nexis-Server/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

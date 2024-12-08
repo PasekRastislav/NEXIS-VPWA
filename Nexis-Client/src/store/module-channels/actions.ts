@@ -9,6 +9,21 @@ interface joinParams {
   isPrivate: boolean
 }
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
+  async messageLoading ({ commit, state }, channel: string) {
+    try {
+      const channelSocket = channelService.in(channel)
+      if (!channelSocket) {
+        throw new Error(`No active socket connection found for channel: ${channel}`)
+      }
+
+      commit('LOADING_START')
+      const messages = await channelSocket.loadMessages()
+      commit('LOADING_SUCCESS', { channel, messages })
+    } catch (error) {
+      console.error(`Failed to load messages for channel ${channel}:`, error)
+      commit('LOADING_ERROR', error)
+    }
+  },
   async joinFirst ({ commit }, params: string | joinParams) {
     try {
       commit('LOADING_START')
@@ -141,11 +156,15 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       commit('CLEAR_TYPING', { channel, userId })
     }, 5000)
   },
-  async refreshChannels ({ commit }) {
+  async refreshChannels ({ commit, state }) {
     try {
-      const channels = await channelService.loadChannels()
-      commit('SET_JOINED_CHANNELS', channels)
-      console.log('Refreshed channels21:', channels)
+      await channelService.loadChannels() // Triggers the loadChannels event to update Vuex state
+
+      // Use the updated Vuex state to verify active channel availability
+      if (state.active && !state.joinedChannels.some((channel: { name: string }) => channel.name === state.active)) {
+        console.log(`Active channel ${state.active} no longer available. Resetting active channel`)
+        commit('SET_ACTIVE', null)
+      }
     } catch (error) {
       console.error('Failed to refresh channels:', error)
     }
