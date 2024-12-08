@@ -20,7 +20,10 @@ export default class MessageRepository implements MessageRepositoryContract {
     content: string
   ): Promise<SerializedMessage> {
     const channel = await Channel.findByOrFail('name', channelName)
-    const message = await channel.related('messages').create({ user_id: userId, content })
+    const message = await channel.related('messages').create({
+      user_id: userId,
+      content,
+    })
     await message.load('author')
     return message.serialize() as SerializedMessage
   }

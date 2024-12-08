@@ -34,9 +34,6 @@
                   {{ lastMessageOf(channel)?.content || 'No messages yet' }}
                 </q-item-label>
               </q-item-section>
-              <q-item-section side>
-                <q-icon name="keyboard_arrow_down" />
-              </q-item-section>
             </q-item>
           </q-list>
         </q-scroll-area>
@@ -384,9 +381,12 @@ export default defineComponent({
       }
     },
     handleNewNotification ({ channel, message }: { channel: string; message: any }) {
+      const currentUser = this.$store.state.auth.user
+      if (this.userState === 'dnd') {
+        console.log('User is in Do Not Disturb mode. Skipping notification.')
+        return
+      }
       if (!this.$q.appVisible && Notification.permission === 'granted') {
-        const currentUser = this.$store.state.auth.user
-
         // Check if the user prefers notifications only for addressed messages
         if (
           this.notifyOnlyMentions &&

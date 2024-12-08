@@ -466,8 +466,6 @@ export default class MessageController {
         user_id: kickedUser.id,
         channel_id: channel.id,
         created_by: kickingUser.id, // The user performing the kick
-        created_at: new Date(),
-        updated_at: new Date(),
       })
 
       // Count the number of unique users who have kicked the target user

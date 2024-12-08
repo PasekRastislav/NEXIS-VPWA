@@ -19,8 +19,8 @@ export default class Kicks extends BaseSchema {
 
       table.unique(['user_id', 'channel_id', 'created_by']) // Ensure no duplicate kicks from the same user
 
-      table.timestamp('created_at', { useTz: true })
-      table.timestamp('updated_at', { useTz: true })
+      table.timestamp('created_at').defaultTo(this.now())
+      table.timestamp('updated_at').defaultTo(this.now())
     })
   }
 
