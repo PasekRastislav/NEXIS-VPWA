@@ -265,7 +265,15 @@ export default defineComponent({
       const granted = await requestNotificationPermission()
       if (granted) {
         console.log('Notifications are enabled!')
+        this.$q.notify({
+          message: 'Notifications are enabled!',
+          color: 'positive'
+        })
       } else {
+        this.$q.notify({
+          message: 'Notifications are disabled or denied.',
+          color: 'negative'
+        })
         console.log('Notifications are disabled or denied.')
       }
       this.showNotificationRequest = false
@@ -279,6 +287,10 @@ export default defineComponent({
     async userList () {
       if (!this.activeChannel) {
         console.error('No active channel')
+        this.$q.notify({
+          message: 'No active channel selected',
+          color: 'negative'
+        })
         return
       }
 
@@ -358,6 +370,10 @@ export default defineComponent({
           await this.addMessage({ channel: this.$store.state.channels.active, message: this.message })
         }
       } catch (err) {
+        this.$q.notify({
+          message: 'Failed to execute command or send message',
+          color: 'negative'
+        })
         console.error('Failed to execute command or send message:', err)
       } finally {
         this.message = '' // Clear the message input after handling
@@ -368,16 +384,32 @@ export default defineComponent({
       try {
         await this.$store.dispatch('channels/join', { channel: this.channelName, isPrivate: this.isPrivateToggle })
         console.log('Successfully joined channel:', this.channelName)
+        this.$q.notify({
+          message: `Successfully joined channel: ${this.channelName}`,
+          color: 'positive'
+        })
       } catch (err) {
         console.error('Failed to join channel:', this.channelName, err)
+        this.$q.notify({
+          message: `Failed to join channel: ${this.channelName}`,
+          color: 'negative'
+        })
       }
     },
     async leaveChannel () {
       try {
         await this.leave(this.activeChannel)
         console.log('Successfully left channel:', this.activeChannel)
+        this.$q.notify({
+          message: `Successfully left channel: ${this.activeChannel}`,
+          color: 'positive'
+        })
       } catch (err) {
         console.error('Failed to leave channel:', this.activeChannel, err)
+        this.$q.notify({
+          message: `Failed to leave channel: ${this.activeChannel}`,
+          color: 'negative'
+        })
       }
     },
     handleNewNotification ({ channel, message }: { channel: string; message: any }) {
@@ -491,6 +523,10 @@ export default defineComponent({
       handler (newUser) {
         if (newUser) {
           console.log('Current user status changed:', newUser)
+          this.$q.notify({
+            message: `User status changed to: ${newUser.state}`,
+            color: 'positive'
+          })
           this.updateUsersInChannel() // Recalculate user statuses if necessary
         }
       }

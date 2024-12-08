@@ -30,13 +30,25 @@ export async function handleCommand (message: string, options: CommandHandlerOpt
         const isPrivate = args.includes('private')
         await store.dispatch('channels/join', { channel: channelName, isPrivate })
         console.log('Successfully joined channel:', channelName)
+        dialog({
+          title: 'Channel Joined',
+          message: `Successfully joined channel: ${channelName}`
+        })
       } else {
         console.error('Channel name is required for /join command')
+        dialog({
+          title: 'Error',
+          message: 'Channel name is required for /join command'
+        })
       }
       break
     case 'cancel':
       await store.dispatch('channels/leave', activeChannel)
       console.log('Left channel:', activeChannel)
+      dialog({
+        title: 'Channel Left',
+        message: `Left channel: ${activeChannel}`
+      })
       break
     case 'quit':
       await store.dispatch('channels/checkAdmin', activeChannel)
@@ -44,7 +56,17 @@ export async function handleCommand (message: string, options: CommandHandlerOpt
       if (store.state.channels.adminStatus[activeChannel]) {
         await store.dispatch('channels/leave', activeChannel)
         console.log('Channel deleted:', activeChannel)
-      } else { console.log('You are not an admin of this channel') }
+        dialog({
+          title: 'Channel Deleted',
+          message: `Channel deleted: ${activeChannel}`
+        })
+      } else {
+        console.log('You are not an admin of this channel')
+        dialog({
+          title: 'Error',
+          message: 'You are not an admin of this channel'
+        })
+      }
       break
     case 'list':
       try {
@@ -69,7 +91,7 @@ export async function handleCommand (message: string, options: CommandHandlerOpt
         console.error('Failed to list users:', error)
         dialog({
           title: 'Error',
-          message: 'Failed to fetch user list. Please try again.'
+          message: 'Failed to fetch user list. Please try again. Maybe you don\'t have active channel.'
         })
       }
       break
@@ -78,8 +100,16 @@ export async function handleCommand (message: string, options: CommandHandlerOpt
         const username = args[0]
         await store.dispatch('channels/inviteUser', { channel: activeChannel, user: username })
         console.log('Invited user:', username)
+        dialog({
+          title: 'User Invited',
+          message: `Invited user: ${username}`
+        })
       } else {
         console.error('Username is required for /invite command')
+        dialog({
+          title: 'Error',
+          message: 'Username is required for /invite command'
+        })
       }
       break
     case 'revoke':
@@ -87,8 +117,16 @@ export async function handleCommand (message: string, options: CommandHandlerOpt
         const username = args[0]
         await store.dispatch('channels/revokeUser', { channel: activeChannel, user: username })
         console.log('Successfully revoked user:', username)
+        dialog({
+          title: 'User Revoked',
+          message: `Successfully revoked user: ${username}`
+        })
       } else {
         console.error('Username is required for /revoke command')
+        dialog({
+          title: 'Error',
+          message: 'Username is required for /revoke command'
+        })
       }
       break
     case 'kick':
@@ -96,12 +134,42 @@ export async function handleCommand (message: string, options: CommandHandlerOpt
         const username = args[0]
         await store.dispatch('channels/kickUser', { channel: activeChannel, user: username })
         console.log('Your kick noticed:', username)
+        dialog({
+          title: 'User Kicked',
+          message: `Your kick noticed: ${username}`
+        })
       } else {
         console.error('Username is required for /kick command')
+        dialog({
+          title: 'Error',
+          message: 'Username is required for /kick command'
+        })
       }
+      break
+    case 'help':
+      dialog({
+        title: 'Help',
+        message: `
+          <b>Available commands:</b>
+          <ul>
+            <li><b>/join &lt;channel&gt;</b> - Join a channel</li>
+            <li><b>/cancel</b> - Leave the current channel</li>
+            <li><b>/quit</b> - If you are admin, delete the current channel</li>
+            <li><b>/list</b> - List users in the current channel</li>
+            <li><b>/invite &lt;username&gt;</b> - Invite a user to the current channel</li>
+            <li><b>/revoke &lt;username&gt;</b> - If you are admin revoke a user from the current channel</li>
+            <li><b>/kick &lt;username&gt;</b> - Kick a user from the current channel</li>
+          </ul>
+        `,
+        html: true
+      })
       break
     default:
       console.error('Unknown command:', command)
+      dialog({
+        title: 'Error',
+        message: 'Unknown command'
+      })
       break
   }
 }
