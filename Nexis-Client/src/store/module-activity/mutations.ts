@@ -1,8 +1,15 @@
 import { MutationTree } from 'vuex'
-import { ActivityStateInterface } from './state'
+import { ActivityStateInterface, OnlineUser } from './state'
 import { User } from 'src/contracts'
 
 const mutation: MutationTree<ActivityStateInterface> = {
+  SET_ONLINE_USERS (state, users: User[]) {
+    const newUsers: { [key: number]: OnlineUser } = {}
+    users.forEach(user => {
+      newUsers[user.id] = { ...user, state: 'online' }
+    })
+    state.onlineUsers = newUsers
+  },
   ONLINE_USER (state, user: User) {
     state.onlineUsers[user.id] = { ...user, state: 'online' }
     console.log('User is online', user)

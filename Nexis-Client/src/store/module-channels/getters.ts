@@ -18,6 +18,9 @@ const getters: GetterTree<ChannelsStateInterface, StateInterface> = {
   },
   isPrivate: (state) => (channelName: string) => {
     return state.isPrivate[channelName]
+  },
+  getUsersForChannel: (state) => (channel: string) => {
+    return state.users[channel] || []
   }
 }
 

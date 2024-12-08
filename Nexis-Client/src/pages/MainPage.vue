@@ -72,7 +72,7 @@
           </q-item-section>
         </q-item>
         <q-separator/>
-        <q-item clickable v-ripple @click="userList">
+        <q-item clickable v-ripple @click="handleListUsers">
           <q-item-section class="row items-center justify-center">List Users
             <q-icon name="list"/>
           </q-item-section>
@@ -117,17 +117,30 @@
           </q-list>
         </q-expansion-item>
         <q-expansion-item
-          label="Online Users"
-          caption="View all users and their statuses"
+          label="Users in Active Channel"
+          caption="Displays all users and their statuses"
           header-class="text-white"
           expand-separator
+          @click="userList"
         >
           <q-list bordered>
-            <q-item v-for="user in allOnlineUsers" :key="user.id" clickable>
+            <q-item v-for="(user, index) in usersArr" :key="index" clickable>
               <q-item-section avatar>
                 <q-icon
-                  :name="user.state === 'online' ? 'check_circle' : user.state === 'dnd' ? 'do_not_disturb' : 'remove_circle'"
-                  :color="user.state === 'online' ? 'positive' : user.state === 'dnd' ? 'warning' : 'grey'"
+                  :name="
+              user.state === 'online'
+                ? 'check_circle'
+                : user.state === 'dnd'
+                ? 'do_not_disturb'
+                : 'remove_circle'
+            "
+                  :color="
+              user.state === 'online'
+                ? 'positive'
+                : user.state === 'dnd'
+                ? 'warning'
+                : 'grey'
+            "
                 />
               </q-item-section>
               <q-item-section>
@@ -170,6 +183,11 @@ import debounce from 'lodash/debounce'
 import ActivityService from 'src/services/ActivityService'
 export type UserStatus = 'online' | 'offline' | 'dnd'
 
+interface User {
+  id: string
+  userName: string
+  state: UserStatus
+}
 const requestNotificationPermission = async () => {
   console.log('Requesting notification permission...')
   try {
@@ -199,8 +217,8 @@ export default defineComponent({
       ],
       debounceTyping: null as (() => void) | null,
       showNotificationRequest: false,
-      notifyOnlyMentions: false
-
+      notifyOnlyMentions: false,
+      usersArr: []
     }
   },
   created () {
@@ -212,7 +230,8 @@ export default defineComponent({
     ...mapGetters('channels', {
       channels: 'joinedChannels',
       lastMessageOf: 'lastMessageOf',
-      isPrivate: 'isPrivate'
+      isPrivate: 'isPrivate',
+      usersInChannel: 'getUsersForChannel'
     }),
     activeChannel () {
       return this.$store.state.channels.active
@@ -261,8 +280,71 @@ export default defineComponent({
       this.debounceTyping?.()
     },
     async userList () {
-      console.log('List of users in channel:', this.activeChannel)
+      if (!this.activeChannel) {
+        console.error('No active channel')
+        return
+      }
+
+      console.log('Fetching users for channel:', this.activeChannel)
       await this.$store.dispatch('channels/listUsers', this.activeChannel)
+
+      const channelUsers = this.usersInChannel(this.activeChannel) || []
+      const onlineUsers = this.allOnlineUsers // Fetch from Vuex
+      const currentUser = this.$store.state.auth.user
+
+      this.usersArr = channelUsers.map((userName: string) => {
+        if (currentUser && userName === currentUser.userName) {
+          // Handle the current user
+          return {
+            userName,
+            state: this.userState // Use the current user's status from the component
+          }
+        }
+
+        // Match other users
+        const matchingOnlineUser = onlineUsers.find(
+          (onlineUser: any) => onlineUser.userName === userName
+        )
+
+        return {
+          userName, // Username from `channelUsers`
+          state: matchingOnlineUser?.state || 'offline' // State from `allOnlineUsers`, default to 'offline'
+        }
+      })
+
+      console.log('Mapped users array with statuses (including current user):', this.usersArr)
+    },
+    updateUsersInChannel () {
+      // Get users from the active channel
+      const rawChannelUsers = this.$store.getters['channels/getUsersForChannel'](
+        this.activeChannel
+      )
+
+      if (!rawChannelUsers) {
+        this.usersArr = []
+        return
+      }
+      const currentUser = this.$store.state.auth.user
+      console.log('Current user:', currentUser)
+      // Map statuses from online users
+      this.usersArr = rawChannelUsers.map((userName: string) => {
+        if (currentUser && userName === currentUser.userName) {
+          return {
+            userName,
+            state: this.userState // Use the current user's status
+          }
+        }
+        const onlineUser = this.allOnlineUsers.find(
+          (user: any) => user.userName === userName
+        )
+
+        return {
+          userName,
+          state: onlineUser?.state || 'offline' // Default to 'offline' if not found
+        }
+      })
+
+      console.log('Updated usersArr:', this.usersArr)
     },
     // send function for handling messages and commands
     async send () {
@@ -324,6 +406,43 @@ export default defineComponent({
         }
       }
     },
+    async handleListUsers () {
+      try {
+        const activeChannel = this.activeChannel // Get the current active channel
+        if (!activeChannel) {
+          this.$q.dialog({
+            title: 'Error',
+            message: 'No active channel selected.'
+          })
+          return
+        }
+
+        let users = this.$store.state.channels.users[activeChannel] || []
+
+        // If no users are found, dispatch an action to fetch them
+        if (users.length === 0) {
+          await this.$store.dispatch('channels/listUsers', activeChannel)
+          users = this.$store.state.channels.users[activeChannel]
+        }
+
+        // Prepare the user list for display
+        const userList = users.map(user => `• ${user}`).join('<br>') || 'No users found in this channel.'
+
+        // Show the user list in a dialog
+        this.$q.dialog({
+          title: `Users in ${activeChannel}`,
+          message: userList,
+          html: true
+        })
+      } catch (error) {
+        console.error('Failed to list users:', error)
+
+        this.$q.dialog({
+          title: 'Error',
+          message: 'Failed to fetch user list. Please try again.'
+        })
+      }
+    },
     async setUserStatus (status: UserStatus) {
       console.log('Setting user status to:', status)
       this.userState = status
@@ -343,6 +462,38 @@ export default defineComponent({
         }
       },
       immediate: true
+    },
+    activeChannel: {
+      immediate: true,
+      handler (newChannel) {
+        if (newChannel) {
+          this.updateUsersInChannel()
+        }
+      }
+    },
+    // Watch for changes to online users
+    userState: {
+      immediate: true,
+      handler (newState) {
+        console.log('User state changed:', newState)
+        this.updateUsersInChannel() // Refresh the users array
+      }
+    },
+    allOnlineUsers: {
+      immediate: true,
+      deep: true,
+      handler () {
+        this.updateUsersInChannel()
+      }
+    },
+    currentUser: {
+      deep: true, // Watch for changes to nested properties, such as `currentUser.state`
+      handler (newUser) {
+        if (newUser) {
+          console.log('Current user status changed:', newUser)
+          this.updateUsersInChannel() // Recalculate user statuses if necessary
+        }
+      }
     }
   }
 })

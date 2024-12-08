@@ -9,6 +9,7 @@ class ActivitySocketManager extends SocketManager {
   public subscribe ({ store }:BootParams): void {
     this.socket.on('user:list', (onlineUsers: User[]) => {
       console.log('Online users list', onlineUsers)
+      store.commit('activity/SET_ONLINE_USERS', onlineUsers)
     })
 
     this.socket.on('user:online', (user: User) => {
