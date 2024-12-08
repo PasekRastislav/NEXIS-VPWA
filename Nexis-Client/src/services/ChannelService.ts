@@ -21,16 +21,11 @@ class ChannelSocketManager extends SocketManager {
           console.error('Invalid channel data:', channel)
           return
         }
-
         store.dispatch('channels/joinFirst', channel.name)
-          .then(() => {
-            store.commit('channels/SET_JOINED_CHANNELS', [channel])
-            store.commit('channels/SET_ACTIVE', channel.name)
-            console.log(`Successfully loaded messages for channel: ${channel.name}`)
-          })
-          .catch((error) => {
-            console.error(`Failed to load messages for channel: ${channel.name}`, error)
-          })
+        store.dispatch('channels/messageLoading', channel.name)
+        store.dispatch('channels/refreshChannels')
+        store.commit('channels/SET_JOINED_CHANNELS', [channel])
+        store.commit('channels/SET_ACTIVE', channel.name)
       }
     })
 

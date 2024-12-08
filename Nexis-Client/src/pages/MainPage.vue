@@ -296,8 +296,8 @@ export default defineComponent({
         if (currentUser && userName === currentUser.userName) {
           // Handle the current user
           return {
-            userName,
-            state: this.userState // Use the current user's status from the component
+            userName: `${userName} (me)`,
+            state: this.userState
           }
         }
 

@@ -290,7 +290,16 @@ export default class MessageController {
             await Database.from('channel_users')
               .where('user_id', invitedUser.id)
               .andWhere('channel_id', channel.id)
-              .update({ is_banned: false })
+              .update({
+                is_banned: false,
+                kick_count: 0, // Reset kick count
+              })
+
+            // Remove all kick records for the invited user in this channel
+            await Database.from('kicks')
+              .where('user_id', invitedUser.id)
+              .andWhere('channel_id', channel.id)
+              .delete()
 
             Ws.io.emit('invited', {
               channel: { name: channel.name, isPrivate: channel.is_private },
@@ -397,26 +406,35 @@ export default class MessageController {
       // Retrieve the channel by name
       const channel = await Channel.findByOrFail('name', params.name)
       const kickingUser = auth.user as User
-      const isChannelPrivate = Boolean(channel.is_private)
-      // Check if the user is an admin of the channel
+
+      // Check if the user performing the kick is in the channel
       const channelUser = await Database.from('channel_users')
         .where('user_id', kickingUser.id)
         .andWhere('channel_id', channel.id)
         .first()
-      channelUser.is_admin = channelUser.is_admin === 1 || channelUser.is_admin === '1'
-      if (!channelUser.is_admin && isChannelPrivate) {
-        console.log('Only admins can kick users.')
-        throw new Error('Only admins can kick users.')
+
+      if (!channelUser) {
+        console.log('Only channel members can kick users.')
+        throw new Error('Only channel members can kick users.')
       }
 
-      // Retrieve the user by username
+      channelUser.is_admin = channelUser.is_admin === 1 || channelUser.is_admin === '1'
+
+      // Non-admins cannot kick users from private channels
+      if (!channelUser.is_admin && channel.is_private) {
+        console.log('Only admins can kick users from private channels.')
+        throw new Error('Only admins can kick users from private channels.')
+      }
+
+      // Retrieve the user to be kicked
       const kickedUser = await User.findByOrFail('user_name', user)
+
       if (!kickedUser) {
         console.log('User does not exist.')
         throw new Error('User does not exist.')
       }
 
-      // Check if the user is in the channel
+      // Check if the user is part of the channel
       const userInChannel = await Database.from('channel_users')
         .where('user_id', kickedUser.id)
         .andWhere('channel_id', channel.id)
@@ -427,35 +445,60 @@ export default class MessageController {
         throw new Error('User is not in the channel.')
       }
 
-      // if user is admin then kick_count is 3
+      // If the kicking user is an admin, ban the kicked user immediately
       if (channelUser.is_admin) {
         await Database.from('channel_users')
           .where('user_id', kickedUser.id)
           .andWhere('channel_id', channel.id)
-          .update('is_banned', 1)
-          .update('kick_count', 0)
-        console.log('User is admin, banned from channel')
-      } else {
-        // if user is not admin then kick_count + 1
+          .update({
+            is_banned: true,
+          })
+
+        console.log('Admin banned user immediately:', kickedUser.user_name)
+        Ws.io.emit('user:kicked', {
+          channel: { name: channel.name, isPrivate: channel.is_private },
+          user: kickedUser.user_name,
+        })
+        return
+      }
+
+      // Track the kick in the `kicks` table
+      await Database.table('kicks').insert({
+        user_id: kickedUser.id,
+        channel_id: channel.id,
+        created_by: kickingUser.id, // The user performing the kick
+        created_at: new Date(),
+        updated_at: new Date(),
+      })
+
+      // Count the number of unique users who have kicked the target user
+      const uniqueKickers = await Database.from('kicks')
+        .where('channel_id', channel.id)
+        .andWhere('user_id', kickedUser.id)
+        .countDistinct('created_by as unique_kickers')
+
+      const kickerCount = Number(uniqueKickers[0].unique_kickers)
+
+      console.log(`Unique kickers for ${kickedUser.user_name}:`, kickerCount)
+
+      // If kicked by 3 unique users, ban the user
+      if (kickerCount >= 3) {
         await Database.from('channel_users')
           .where('user_id', kickedUser.id)
           .andWhere('channel_id', channel.id)
-          .increment('kick_count', 1)
-        console.log('User kicked from channel:', channel)
-        if (userInChannel.kick_count === 3) {
-          await Database.from('channel_users')
-            .where('user_id', kickedUser.id)
-            .andWhere('channel_id', channel.id)
-            .update('is_banned', 1)
-            .update('kick_count', 0)
-          console.log('User is banned from channel')
-        }
+          .update({
+            is_banned: true,
+          })
+
+        console.log('User banned after being kicked by 3 unique users:', kickedUser.user_name)
+
+        Ws.io.emit('user:kicked', {
+          channel: { name: channel.name, isPrivate: channel.is_private },
+          user: kickedUser.user_name,
+        })
+      } else {
+        console.log('User kicked but not yet banned:', kickedUser.user_name)
       }
-      Ws.io.emit('user:kicked', {
-        channel: { name: channel.name, isPrivate: channel.is_private },
-        user: kickedUser.user_name,
-      })
-      console.log('User successfully kicked from channel:', channel)
     } catch (error) {
       console.error('Error kicking user:', error.message)
       socket.emit('user:kick:error', {
