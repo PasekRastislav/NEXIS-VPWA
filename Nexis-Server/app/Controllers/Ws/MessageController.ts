@@ -157,7 +157,7 @@ export default class MessageController {
           isPrivate: Boolean(channel.is_private),
         }
 
-        socket.emit('channel:joined', channelDict)
+        socket.emit('channel:joined', channelDict, user.user_name)
         console.log('Channel created and user added as admin:', channel)
         return
       }
@@ -179,7 +179,14 @@ export default class MessageController {
           })
         }
 
-        socket.broadcast.emit('channel:joined', channel, user)
+        Ws.io.emit('joined', {
+          channel: { name: channel.name, isPrivate: channel.is_private },
+          user: user.user_name,
+        })
+        socket.broadcast.emit('channel:joined', {
+          channel: { name: channel.name, isPrivate: channel.is_private },
+          user: user.user_name,
+        })
         console.log('User successfully joined public channel:', channel)
         return
       }

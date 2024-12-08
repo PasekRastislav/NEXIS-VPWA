@@ -25,6 +25,10 @@ const mutation: MutationTree<ActivityStateInterface> = {
     } else {
       console.warn(`User with ID ${userId} not found in onlineUsers.`)
     }
+  },
+  SET_CURRENT_USER_STATUS (state, status: 'online' | 'offline' | 'dnd') {
+    state.currentUserStatus = status
+    console.log('User status updated:', status)
   }
 }
 

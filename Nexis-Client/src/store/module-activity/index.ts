@@ -3,12 +3,12 @@ import { Module } from 'vuex'
 import { StateInterface } from '../index'
 import state, { ActivityStateInterface } from './state'
 import getters from './getters'
-// import actions from './actions'
+import actions from './actions'
 import mutations from './mutations'
 
 const activityModule: Module<ActivityStateInterface, StateInterface> = {
   namespaced: true,
-  // actions,
+  actions,
   getters,
   mutations,
   state

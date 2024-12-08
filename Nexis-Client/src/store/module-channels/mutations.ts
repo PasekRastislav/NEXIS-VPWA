@@ -36,8 +36,13 @@ const mutation: MutationTree<ChannelsStateInterface> = {
       state.active = null
     }
   },
-  NEW_MESSAGE (state, { channel, message }: { channel: string, message: SerializedMessage }) {
+  NEW_MESSAGE (state, { channel, message }: { channel: string; message: SerializedMessage }) {
+    if (!state.messages[channel]) {
+      state.messages[channel] = []
+    }
     state.messages[channel].push(message)
+
+    // Notify if the channel is not active
     if (channel !== state.active) {
       state.notification = { channel, message }
     }
@@ -110,6 +115,17 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     if (state.typingUsers && state.typingUsers[channel] && state.typingUsers[channel][userId]) {
       delete state.typingUsers[channel][userId]
     }
+  },
+  INIT_BUFFER (state, channel: string) {
+    if (!state.bufferedMessages[channel]) {
+      state.bufferedMessages[channel] = []
+    }
+  },
+  ADD_TO_BUFFER (state, { channel, message }: { channel: string; message: SerializedMessage }) {
+    state.bufferedMessages[channel].push(message)
+  },
+  CLEAR_BUFFER (state, channel: string) {
+    state.bufferedMessages[channel] = []
   }
 
 }

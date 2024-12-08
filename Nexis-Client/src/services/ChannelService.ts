@@ -34,7 +34,7 @@ class ChannelSocketManager extends SocketManager {
     })
 
     this.socket.on('message', (message: SerializedMessage) => {
-      store.commit('channels/NEW_MESSAGE', { channel, message })
+      store.dispatch('channels/handleNewMessage', { channel, message })
     })
 
     this.socket.on('users', (users: ChannelUser[]) => {
@@ -59,14 +59,21 @@ class ChannelSocketManager extends SocketManager {
       if (store.state.auth.user?.userName === user) {
         console.log(`User ${user} joined channel ${channel}`)
         store.dispatch('channels/joinFirst', channel.name)
-          .then(() => {
-            store.commit('channels/SET_JOINED_CHANNELS', [channel])
-            store.commit('channels/SET_ACTIVE', channel.name)
-            console.log('Channel joined:', channel)
-          })
-          .catch((error) => {
-            console.error(`Failed to load messages for channel: ${channel.name}`, error)
-          })
+        store.dispatch('channels/messageLoading', channel.name)
+        store.dispatch('channels/refreshChannels')
+        store.commit('channels/SET_JOINED_CHANNELS', [channel])
+        store.commit('channels/SET_ACTIVE', channel.name)
+      }
+    })
+
+    this.socket.on('joined', ({ channel, user }) => {
+      if (store.state.auth.user?.userName === user) {
+        console.log(`User ${user} joined channel ${channel}`)
+        store.dispatch('channels/joinFirst', channel.name)
+        store.dispatch('channels/messageLoading', channel.name)
+        store.dispatch('channels/refreshChannels')
+        store.commit('channels/SET_JOINED_CHANNELS', [channel])
+        store.commit('channels/SET_ACTIVE', channel.name)
       }
     })
 

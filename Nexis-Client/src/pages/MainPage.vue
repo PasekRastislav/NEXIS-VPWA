@@ -382,8 +382,17 @@ export default defineComponent({
     },
     async joinNewChannel () {
       try {
-        await this.$store.dispatch('channels/join', { channel: this.channelName, isPrivate: this.isPrivateToggle })
+        await this.$store.dispatch('channels/join', {
+          channel: this.channelName,
+          isPrivate: this.isPrivateToggle
+        })
         console.log('Successfully joined channel:', this.channelName)
+
+        // Update Vuex state for the channel's privacy status
+        this.$store.commit('channels/SET_JOINED_CHANNELS', [
+          { name: this.channelName, isPrivate: this.isPrivateToggle }
+        ])
+
         this.$q.notify({
           message: `Successfully joined channel: ${this.channelName}`,
           color: 'positive'
@@ -478,7 +487,7 @@ export default defineComponent({
     async setUserStatus (status: UserStatus) {
       console.log('Setting user status to:', status)
       this.userState = status
-      ActivityService.updateUserStatus(status) // Call the updateUserStatus function
+      await this.$store.dispatch('activity/setCurrentUserStatus', status)
     },
     ...mapMutations('channels', {
       setActiveChannel: 'SET_ACTIVE'
@@ -487,6 +496,14 @@ export default defineComponent({
     ...mapActions('channels', ['addMessage', 'join', 'joinFirst', 'leave'])
   },
   watch: {
+    bufferedMessages (newBuffer) {
+      if (Object.keys(newBuffer).length > 0) {
+        this.$q.notify({
+          message: 'You have new buffered messages!',
+          color: 'info'
+        })
+      }
+    },
     notification: {
       handler (newNotification) {
         if (newNotification) {

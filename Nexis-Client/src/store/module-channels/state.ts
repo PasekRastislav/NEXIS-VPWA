@@ -13,7 +13,8 @@ export interface ChannelsStateInterface {
   joinedChannels: { id: number; name: string; isPrivate: boolean; isBanned: boolean }[],
   typingUsers?: { [channel: string]: { [userId: string]: { userName: string; text: string } } },
   highlightedChannel?: string | null,
-  appIsVisible: boolean
+  appIsVisible: boolean,
+  bufferedMessages: { [channel: string]: SerializedMessage[] }
 }
 
 function state (): ChannelsStateInterface {
@@ -30,7 +31,8 @@ function state (): ChannelsStateInterface {
     joinedChannels: [],
     typingUsers: {},
     highlightedChannel: null,
-    appIsVisible: true
+    appIsVisible: true,
+    bufferedMessages: {}
   }
 }
 

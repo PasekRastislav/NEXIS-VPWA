@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
 import { channelService } from 'src/services'
-import { RawMessage } from 'src/contracts'
+import { RawMessage, SerializedMessage } from 'src/contracts'
 
 interface joinParams {
   channel: string,
@@ -167,6 +167,29 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       }
     } catch (error) {
       console.error('Failed to refresh channels:', error)
+    }
+  },
+  async processBufferedMessages ({ state, commit }) {
+    console.log('Processing buffered messages...')
+    for (const [channel, messages] of Object.entries(state.bufferedMessages)) {
+      messages.forEach((message) => {
+        commit('NEW_MESSAGE', { channel, message })
+      })
+      commit('CLEAR_BUFFER', channel)
+    }
+  },
+  async handleNewMessage ({ state, rootState, commit }, { channel, message }: { channel: string; message: SerializedMessage }) {
+    const userStatus = rootState.activity.currentUserStatus
+
+    if (userStatus === 'offline') {
+      console.log('User is offline, buffering message:', message)
+      if (!state.bufferedMessages[channel]) {
+        commit('INIT_BUFFER', channel)
+      }
+      commit('ADD_TO_BUFFER', { channel, message })
+    } else {
+      console.log('User is online, processing message:', message)
+      commit('NEW_MESSAGE', { channel, message })
     }
   }
 

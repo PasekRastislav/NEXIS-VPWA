@@ -6,12 +6,14 @@ export interface OnlineUser extends User {
 }
 
 export interface ActivityStateInterface {
-  onlineUsers: { [userId: number]: OnlineUser }
+  onlineUsers: { [userId: number]: OnlineUser },
+  currentUserStatus: 'online' | 'offline' | 'dnd'
 }
 
 function state (): ActivityStateInterface {
   return {
-    onlineUsers: {}
+    onlineUsers: {},
+    currentUserStatus: 'online'
   }
 }
 
