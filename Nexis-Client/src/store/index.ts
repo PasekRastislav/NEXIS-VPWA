@@ -10,7 +10,8 @@ import auth from './module-auth'
 import channels from './module-channels'
 import type { AuthStateInterface } from './module-auth/state'
 import type { ChannelsStateInterface } from './module-channels/state'
-
+import type { ActivityStateInterface } from './module-activity/state'
+import activity from './module-activity'
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
@@ -26,6 +27,7 @@ export interface StateInterface {
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   auth: AuthStateInterface
   channels: ChannelsStateInterface
+  activity: ActivityStateInterface
 }
 
 // provide typings for `this.$store`
@@ -42,7 +44,8 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
       auth,
-      channels
+      channels,
+      activity
     },
 
     // enable strict mode (adds overhead!)

@@ -58,6 +58,7 @@ export default class ActivityController {
     try {
       console.log(`${auth.user!.user_name} is now ${status}`)
       socket.data.userStatus = status // update status
+      console.log(status)
       socket.broadcast.emit('user:setStatus', { user: auth.user, status: status })
       logger.info('user status updated', { userId: auth.user!.id, status: status })
     } catch (error) {

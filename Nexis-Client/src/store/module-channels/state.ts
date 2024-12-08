@@ -12,7 +12,8 @@ export interface ChannelsStateInterface {
   notification: { channel: string, message: SerializedMessage } | null,
   joinedChannels: { id: number; name: string; isPrivate: boolean; isBanned: boolean }[],
   typingUsers?: { [channel: string]: { [userId: string]: { userName: string; text: string } } },
-  highlightedChannel?: string | null
+  highlightedChannel?: string | null,
+  appIsVisible: boolean
 }
 
 function state (): ChannelsStateInterface {
@@ -28,7 +29,8 @@ function state (): ChannelsStateInterface {
     notification: null,
     joinedChannels: [],
     typingUsers: {},
-    highlightedChannel: null
+    highlightedChannel: null,
+    appIsVisible: true
   }
 }
 

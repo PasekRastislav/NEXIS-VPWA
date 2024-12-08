@@ -44,6 +44,16 @@
 
       <!-- Main Content -->
       <q-page-container>
+        <q-card v-if="showNotificationRequest" flat bordered class="q-mb-md">
+          <q-card-section>
+            <div class="text-h6">Enable Notifications</div>
+            <div class="text-subtitle2">Stay updated with important messages</div>
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn label="Enable" color="primary" @click="handleNotificationRequest" />
+            <q-btn flat label="Dismiss" @click="showNotificationRequest = false" />
+          </q-card-actions>
+        </q-card>
         <router-view />
       </q-page-container>
 
@@ -76,6 +86,11 @@
             <q-icon name="login"/>
           </q-item-section>
         </q-item>
+        <q-toggle
+          v-model="notifyOnlyMentions"
+          label="Notify only for messages addressed to me"
+          dense
+        />
         <!-- User status -->
         <q-expansion-item
           label="Status"
@@ -101,6 +116,28 @@
             </q-item>
           </q-list>
         </q-expansion-item>
+        <q-expansion-item
+          label="Online Users"
+          caption="View all users and their statuses"
+          header-class="text-white"
+          expand-separator
+        >
+          <q-list bordered>
+            <q-item v-for="user in allOnlineUsers" :key="user.id" clickable>
+              <q-item-section avatar>
+                <q-icon
+                  :name="user.state === 'online' ? 'check_circle' : user.state === 'dnd' ? 'do_not_disturb' : 'remove_circle'"
+                  :color="user.state === 'online' ? 'positive' : user.state === 'dnd' ? 'warning' : 'grey'"
+                />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ user.userName }}</q-item-label>
+                <q-item-label caption>{{ user.state }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-expansion-item>
+
       </q-drawer>
       <!-- Footer -->
       <q-footer>
@@ -130,7 +167,20 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ChannelService from 'src/services/ChannelService'
 import { handleCommand } from 'src/chat/commandHandler'
 import debounce from 'lodash/debounce'
+import ActivityService from 'src/services/ActivityService'
+export type UserStatus = 'online' | 'offline' | 'dnd'
 
+const requestNotificationPermission = async () => {
+  console.log('Requesting notification permission...')
+  try {
+    const permission = await Notification.requestPermission()
+    console.log('Notification permission result:', permission)
+    return permission === 'granted'
+  } catch (error) {
+    console.error('Error requesting notification permission:', error)
+    return false
+  }
+}
 export default defineComponent({
   name: 'ChatLayout',
   data () {
@@ -147,14 +197,18 @@ export default defineComponent({
         { value: 'dnd', label: 'Do Not Disturb', icon: 'do_not_disturb', color: 'warning' },
         { value: 'offline', label: 'Offline', icon: 'remove_circle', color: 'grey' }
       ],
-      debounceTyping: null as (() => void) | null
+      debounceTyping: null as (() => void) | null,
+      showNotificationRequest: false,
+      notifyOnlyMentions: false
+
     }
   },
   created () {
     this.debounceTyping = debounce(this.sendTyping, 300)
   },
   computed: {
-    ...mapState('channels', ['deletedChannels']),
+    ...mapGetters('activity', ['allOnlineUsers']),
+    ...mapState('channels', ['deletedChannels', 'notification']),
     ...mapGetters('channels', {
       channels: 'joinedChannels',
       lastMessageOf: 'lastMessageOf',
@@ -166,6 +220,21 @@ export default defineComponent({
   },
   async mounted () {
     console.log('onmounted')
+    // Check notification permission
+    if (Notification.permission === 'default') {
+      this.showNotificationRequest = true
+    }
+
+    // Watch visibility changes
+    this.$watch(
+      () => this.$q.appVisible,
+      (isVisible: boolean) => {
+        console.log(`App visibility changed: ${isVisible}`)
+        if (!isVisible) {
+          console.log('App is hidden')
+        }
+      }
+    )
     await ChannelService.loadChannels()
     for (const channel of this.channels) {
       await this.$store.dispatch('channels/joinFirst', channel)
@@ -176,6 +245,15 @@ export default defineComponent({
     }
   },
   methods: {
+    async handleNotificationRequest () {
+      const granted = await requestNotificationPermission()
+      if (granted) {
+        console.log('Notifications are enabled!')
+      } else {
+        console.log('Notifications are disabled or denied.')
+      }
+      this.showNotificationRequest = false
+    },
     sendTyping () {
       this.$store.dispatch('channels/sendTyping', this.message)
     },
@@ -223,11 +301,49 @@ export default defineComponent({
         console.error('Failed to leave channel:', this.activeChannel, err)
       }
     },
+    handleNewNotification ({ channel, message }: { channel: string; message: any }) {
+      if (!this.$q.appVisible && Notification.permission === 'granted') {
+        const currentUser = this.$store.state.auth.user
+
+        // Check if the user prefers notifications only for addressed messages
+        if (
+          this.notifyOnlyMentions &&
+          (!currentUser || !message.content.includes(`@${currentUser.userName}`))
+        ) {
+          return // Skip notification if not addressed to the user
+        }
+
+        const notification = new Notification(`New message in ${channel}`, {
+          body: `${message.author.userName}: ${message.content}`,
+          icon: '/path/to/icon.png'
+        })
+
+        notification.onclick = () => {
+          window.focus()
+          this.setActiveChannel(channel)
+        }
+      }
+    },
+    async setUserStatus (status: UserStatus) {
+      console.log('Setting user status to:', status)
+      this.userState = status
+      ActivityService.updateUserStatus(status) // Call the updateUserStatus function
+    },
     ...mapMutations('channels', {
       setActiveChannel: 'SET_ACTIVE'
     }),
     ...mapActions('auth', ['logout']),
     ...mapActions('channels', ['addMessage', 'join', 'joinFirst', 'leave'])
+  },
+  watch: {
+    notification: {
+      handler (newNotification) {
+        if (newNotification) {
+          this.handleNewNotification(newNotification)
+        }
+      },
+      immediate: true
+    }
   }
 })
 
