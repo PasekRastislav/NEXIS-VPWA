@@ -7,15 +7,6 @@
     <list default="true" id="c3389cbc-f9f4-40d4-b6ac-9f4e9b7d1c7f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/pages/MainPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/services/ChannelService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/services/ChannelService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-activity/actions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-activity/actions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-activity/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-activity/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-activity/mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-activity/mutations.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-activity/state.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-activity/state.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/actions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/actions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/mutations.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/state.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Client/src/store/module-channels/state.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Nexis-Server/app/Controllers/Ws/MessageController.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
