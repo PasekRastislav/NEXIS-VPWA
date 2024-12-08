@@ -14,7 +14,41 @@
 
       <!-- Left Drawer -->
       <q-drawer v-model="leftDrawerOpen" side="left" bordered class="drawer-gradient">
-
+        <q-dialog v-model="showJoinChannelDialog">
+          <q-card>
+            <q-card-section>
+              <div class="text-h6">Join Channel</div>
+            </q-card-section>
+            <q-card-section>
+              <q-input
+                v-model="channelName"
+                label="Channel Name"
+                outlined
+                dense
+                bg-color="white"
+              />
+              <q-toggle
+                v-model="isPrivateToggle"
+                label="Private"
+                dense
+                :true-value="true"
+                :false-value="false"
+              />
+            </q-card-section>
+            <q-card-actions align="right">
+              <q-btn flat label="Cancel" color="negative" @click="showJoinChannelDialog = false" />
+              <q-btn label="Join" color="primary" @click="joinNewChannel" />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
+        <q-separator />
+        <q-item clickable v-ripple @click="showJoinChannelDialog = true">
+          <q-item-section class="row items-center justify-center">
+            Join Channel
+            <q-icon name="login" />
+          </q-item-section>
+        </q-item>
+        <q-separator />
         <q-scroll-area style="height: calc(100% - 100px)">
           <q-list>
             <q-item
@@ -63,31 +97,13 @@
         <q-item v-else>
           <q-item-section>No active channel</q-item-section>
         </q-item>
-        <q-item clickable v-ripple v-if="activeChannel" @click="leaveChannel">
-          <q-item-section class="row items-center justify-center">Leave Channel
-            <q-icon name="logout"/>
-          </q-item-section>
-        </q-item>
-        <q-separator/>
-        <q-item clickable v-ripple @click="handleListUsers">
-          <q-item-section class="row items-center justify-center">List Users
-            <q-icon name="list"/>
-          </q-item-section>
-        </q-item>
-        <q-separator/>
-        <q-separator/>
-        <q-input v-model="channelName" label="Channel Name" outlined dense bg-color="white"/>
-        <q-toggle v-model="isPrivateToggle" label="Private" dense :true-value="true" :false-value="false"/>
-        <q-item clickable v-ripple @click="joinNewChannel">
-          <q-item-section class="row items-center justify-center">Join Channel
-            <q-icon name="login"/>
-          </q-item-section>
-        </q-item>
+        <q-separator />
         <q-toggle
           v-model="notifyOnlyMentions"
-          label="Notify only for messages addressed to me"
+          label="Notify mentions only"
           dense
         />
+        <q-separator />
         <!-- User status -->
         <q-expansion-item
           label="Status"
@@ -113,6 +129,7 @@
             </q-item>
           </q-list>
         </q-expansion-item>
+        <q-separator/>
         <q-expansion-item
           label="Users in Active Channel"
           caption="Displays all users and their statuses"
@@ -147,7 +164,19 @@
             </q-item>
           </q-list>
         </q-expansion-item>
-
+        <q-separator/>
+        <q-item clickable v-ripple @click="handleListUsers">
+          <q-item-section class="row items-center justify-center">List Users
+            <q-icon name="list"/>
+          </q-item-section>
+        </q-item>
+        <q-separator/>
+        <q-separator/>
+        <q-item clickable v-ripple v-if="activeChannel" @click="leaveChannel">
+          <q-item-section class="row items-center justify-center">Leave Channel
+            <q-icon name="logout"/>
+          </q-item-section>
+        </q-item>
       </q-drawer>
       <!-- Footer -->
       <q-footer>
@@ -215,7 +244,8 @@ export default defineComponent({
       debounceTyping: null as (() => void) | null,
       showNotificationRequest: false,
       notifyOnlyMentions: false,
-      usersArr: []
+      usersArr: [],
+      showJoinChannelDialog: false
     }
   },
   created () {
@@ -407,12 +437,12 @@ export default defineComponent({
     },
     async leaveChannel () {
       try {
-        await this.leave(this.activeChannel)
-        console.log('Successfully left channel:', this.activeChannel)
         this.$q.notify({
           message: `Successfully left channel: ${this.activeChannel}`,
           color: 'positive'
         })
+        await this.leave(this.activeChannel)
+        console.log('Successfully left channel:', this.activeChannel)
       } catch (err) {
         console.error('Failed to leave channel:', this.activeChannel, err)
         this.$q.notify({
