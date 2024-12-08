@@ -39,10 +39,7 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   NEW_MESSAGE (state, { channel, message }: { channel: string, message: SerializedMessage }) {
     state.messages[channel].push(message)
     if (channel !== state.active) {
-      state.notification = {
-        channel,
-        message
-      }
+      state.notification = { channel, message }
     }
   },
   SET_USERS (state, { channel, users }) {
@@ -116,5 +113,4 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   }
 
 }
-
 export default mutation
